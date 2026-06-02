@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HitFinds Growth</title>
+  <style>
+    :root {
+      --lime: #c6ff00;
+      --lime-soft: #bbff00;
+      --ink: #000;
+      --panel: #121212;
+      --panel-line: #242424;
+      --muted: #a6a6aa;
+      --dim: #76767c;
+      --white: #f7f7f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #000;
+      color: var(--white);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: start center;
+      overflow-x: hidden;
+    }
+
+    .screen {
+      position: relative;
+      width: min(100vw, 390px);
+      min-height: 817px;
+      background: #000;
+      overflow: hidden;
+      padding: 0 12px 118px;
+    }
+
+    .status {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 28px 0 29px;
+      font-weight: 900;
+      font-size: 17px;
+      line-height: 1;
+      color: #f5f5f5;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .mute {
+      position: relative;
+      width: 17px;
+      height: 17px;
+      transform: rotate(45deg);
+    }
+
+    .mute::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 5px;
+      width: 12px;
+      height: 8px;
+      border-radius: 2px;
+      background: #f2f2f2;
+      clip-path: polygon(0 25%, 38% 25%, 76% 0, 76% 100%, 38% 75%, 0 75%);
+    }
+
+    .mute::after {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 8px;
+      width: 21px;
+      height: 3px;
+      border-radius: 3px;
+      background: #f2f2f2;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: repeat(5, 4px);
+      align-items: end;
+      gap: 3px;
+      height: 17px;
+    }
+
+    .signal span {
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: #f7f7f7;
+    }
+
+    .signal span:nth-child(1) { height: 5px; }
+    .signal span:nth-child(2) { height: 8px; }
+    .signal span:nth-child(3) { height: 11px; }
+    .signal span:nth-child(4) { height: 14px; }
+    .signal span:nth-child(5) { height: 17px; }
+
+    .wifi {
+      position: relative;
+      width: 24px;
+      height: 18px;
+      overflow: hidden;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid #f7f7f7;
+      border-color: #f7f7f7 transparent transparent transparent;
+      border-radius: 50%;
+    }
+
+    .wifi::before {
+      top: 0;
+      width: 28px;
+      height: 28px;
+    }
+
+    .wifi::after {
+      top: 8px;
+      width: 15px;
+      height: 15px;
+      border-width: 4px;
+    }
+
+    .battery {
+      position: relative;
+      width: 28px;
+      height: 17px;
+      border-radius: 5px;
+      background: #cfcfd1;
+      color: #050505;
+      font-weight: 1000;
+      font-size: 13px;
+      line-height: 17px;
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -3px;
+      top: 5px;
+      width: 2px;
+      height: 7px;
+      border-radius: 0 2px 2px 0;
+      background: #cfcfd1;
+    }
+
+    .topbar {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      font-size: 22px;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 24px;
+      height: 25px;
+      display: grid;
+      grid-template-columns: repeat(4, 5px);
+      align-items: end;
+      gap: 1.5px;
+      transform: skewY(-23deg);
+      margin-bottom: 2px;
+    }
+
+    .brand-mark span {
+      width: 5px;
+      border-radius: 2px 2px 0 0;
+      background: var(--lime);
+      box-shadow: 0 0 2px rgba(198, 255, 0, 0.55);
+    }
+
+    .brand-mark span:nth-child(1) { height: 15px; }
+    .brand-mark span:nth-child(2) { height: 19px; }
+    .brand-mark span:nth-child(3) { height: 23px; }
+    .brand-mark span:nth-child(4) { height: 27px; transform: translateY(-3px); }
+
+    .brand .hit {
+      color: #f4f4f4;
+    }
+
+    .brand .finds {
+      color: #f4f4f4;
+    }
+
+    .brand .accent {
+      color: var(--lime);
+    }
+
+    .gear {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      margin-right: 8px;
+      color: #a9aaae;
+      font-size: 28px;
+      line-height: 1;
+      filter: drop-shadow(0 0 1px #fff);
+    }
+
+    .profile {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      column-gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 74px;
+      height: 74px;
+      border: 2px solid var(--lime);
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 47% 54%, rgba(255, 255, 255, 0.85) 0 3px, transparent 4px),
+        radial-gradient(circle at 47% 56%, #dce7ed 0 22px, #c2d3d8 23px 28px, transparent 29px),
+        radial-gradient(circle at 51% 48%, rgba(78, 112, 136, 0.95) 0 24px, transparent 25px),
+        radial-gradient(circle at 50% 58%, #edf5f4 0 33px, #a5b8bb 34px 37px, transparent 38px),
+        radial-gradient(circle at 50% 50%, #0e1218 0 48%, #050506 60%);
+      box-shadow: 0 0 0 1px rgba(198, 255, 0, 0.15);
+    }
+
+    .avatar::before {
+      content: "KY SHOP";
+      position: absolute;
+      left: 18px;
+      top: 39px;
+      width: 40px;
+      height: 11px;
+      transform: rotate(-9deg);
+      border-radius: 8px;
+      background: rgba(178, 207, 181, 0.9);
+      color: #6a9d83;
+      font-size: 4px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 11px;
+      letter-spacing: 0.8px;
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 54px;
+      width: 19px;
+      height: 12px;
+      border-radius: 50% 50% 38% 38%;
+      background: linear-gradient(135deg, #df694e, #87352f);
+      transform: rotate(15deg);
+      box-shadow:
+        -10px -40px 0 -8px rgba(255, 255, 255, 0.15),
+        21px -34px 0 -9px rgba(255, 255, 255, 0.2),
+        11px 8px 0 -7px rgba(255, 255, 255, 0.55);
+    }
+
+    .identity {
+      min-width: 0;
+      padding-top: 1px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .handle {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing: -0.5px;
+    }
+
+    .membership-row {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .pro {
+      height: 21px;
+      padding: 0 9px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--lime);
+      color: #050505;
+      font-size: 14px;
+      font-weight: 1000;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .date {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #a0a0a5;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .date svg {
+      width: 13px;
+      height: 13px;
+      stroke-width: 2.8;
+      flex: 0 0 auto;
+    }
+
+    .date span:not(.chev) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chev {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-top: 2px solid #a0a0a5;
+      border-right: 2px solid #a0a0a5;
+      transform: rotate(45deg);
+      margin-left: 1px;
+      flex: 0 0 auto;
+    }
+
+    .category {
+      margin-top: 5px;
+      color: #a8a8ad;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank {
+      margin-top: 6px;
+      width: min(100%, fit-content);
+      max-width: 100%;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 9px 0 8px;
+      border-radius: 14px;
+      background: var(--lime);
+      color: #090909;
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing: 0.35px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .rank svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.7;
+      flex: 0 0 auto;
+    }
+
+    .rank span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .performance-head {
+      position: relative;
+      margin-top: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .performance-title {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 1000;
+      color: #a8a8ad;
+      letter-spacing: 0.2px;
+    }
+
+    .help-button {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #5c5c62;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+      color: #b6b6bb;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .help-button.is-open {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .help-popover {
+      position: absolute;
+      left: 0;
+      top: 28px;
+      z-index: 5;
+      width: min(285px, calc(100vw - 28px));
+      padding: 10px 12px;
+      border: 1px solid rgba(198, 255, 0, 0.7);
+      border-radius: 12px;
+      background: #111;
+      color: #f2f2f2;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: 0;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+    }
+
+    .help-popover::before {
+      content: "";
+      position: absolute;
+      left: 86px;
+      top: -5px;
+      width: 8px;
+      height: 8px;
+      border-left: 1px solid rgba(198, 255, 0, 0.7);
+      border-top: 1px solid rgba(198, 255, 0, 0.7);
+      background: #111;
+      transform: rotate(45deg);
+    }
+
+    .help-popover[hidden] {
+      display: none;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 7px;
+    }
+
+    .tab {
+      min-width: 48px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      border: 1px solid #5c5c62;
+      color: #b6b6bb;
+      font-size: 15px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .tab.active {
+      min-width: 46px;
+      border-color: transparent;
+      background: var(--lime);
+      color: #050505;
+    }
+
+    .card {
+      position: relative;
+      margin-top: 16px;
+      width: 100%;
+      min-height: 222px;
+      border-radius: 22px;
+      border: 1px solid #252525;
+      background: #121212;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+      padding: 14px 15px 12px;
+    }
+
+    .card-arrow {
+      position: absolute;
+      right: 15px;
+      top: 13px;
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #222225;
+      color: #bfc0c2;
+    }
+
+    .card-arrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-top: 2.5px solid currentColor;
+      border-right: 2.5px solid currentColor;
+      transform: rotate(45deg);
+      margin-left: -2px;
+    }
+
+    .metric-title {
+      color: #a8a8ad;
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+    }
+
+    .gmv-row {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: 135px 1fr;
+      align-items: center;
+      min-height: 37px;
+    }
+
+    .gmv-value {
+      font-size: 35px;
+      font-weight: 1000;
+      letter-spacing: -1.4px;
+      line-height: 0.95;
+    }
+
+    .progress {
+      position: relative;
+      height: 42px;
+      margin: 0 32px 0 2px;
+    }
+
+    .gmv-chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .gmv-chart .trend-line {
+      fill: none;
+      stroke: var(--lime);
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 2px rgba(198, 255, 0, 0.32));
+    }
+
+    .gmv-chart .trend-area {
+      fill: url(#gmvArea);
+      opacity: 0.55;
+    }
+
+    .gmv-chart .trend-point {
+      fill: var(--lime);
+      filter: drop-shadow(0 0 0 rgba(198, 255, 0, 1));
+    }
+
+    .gmv-chart .trend-halo {
+      fill: rgba(198, 255, 0, 0.38);
+    }
+
+    .card-divider {
+      width: 100%;
+      height: 1px;
+      background: #262626;
+      margin: 10px 0 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .stat {
+      min-height: 63px;
+      padding: 0 0 11px;
+      display: grid;
+      grid-template-rows: 18px 31px 16px;
+      align-content: start;
+    }
+
+    .stat:nth-child(1),
+    .stat:nth-child(2) {
+      grid-column: span 3;
+    }
+
+    .stat:nth-child(3),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      grid-column: span 2;
+      min-height: 74px;
+      grid-template-rows: 22px 27px 15px;
+    }
+
+    .stat:nth-child(2),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      border-left: 1px solid #252525;
+      padding-left: 12px;
+    }
+
+    .stat:nth-child(3),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      border-top: 1px solid #262626;
+      padding-top: 12px;
+      padding-bottom: 0;
+    }
+
+    .stat:nth-child(n + 3) .label {
+      font-size: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .stat:nth-child(n + 3) .value {
+      font-size: 18px;
+    }
+
+    .stat:nth-child(n + 3) .peer {
+      font-size: 10px;
+    }
+
+      .stat:nth-child(n + 3) .label,
+      .stat:nth-child(n + 3) .value,
+      .stat:nth-child(n + 3) .peer {
+        align-self: center;
+        margin-top: 0;
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+    .stat:nth-child(5) .label {
+      font-size: 9px;
+      letter-spacing: 0;
+    }
+
+    .label {
+      color: #a8a8ad;
+      font-size: 10px;
+      font-weight: 1000;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+
+    .value {
+      margin-top: 0;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 1000;
+      letter-spacing: -0.6px;
+      line-height: 1;
+    }
+
+    .peer {
+      margin-top: 0;
+      color: #a8a8ad;
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: 0.2px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .peer-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .peer-help {
+      width: 11px;
+      height: 11px;
+      border: 1px solid #68686f;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      padding: 0;
+      background: transparent;
+      color: #b9b9be;
+      font: inherit;
+      font-size: 7px;
+      font-weight: 1000;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .peer-help.is-open {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .peer-popover {
+      position: fixed;
+      z-index: 8;
+      width: min(292px, calc(100vw - 28px));
+      padding: 10px 12px;
+      border: 1px solid rgba(198, 255, 0, 0.7);
+      border-radius: 12px;
+      background: #111;
+      color: #f2f2f2;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .peer-popover::before {
+      content: "";
+      position: absolute;
+      left: var(--arrow-left, 18px);
+      top: -5px;
+      width: 8px;
+      height: 8px;
+      border-left: 1px solid rgba(198, 255, 0, 0.7);
+      border-top: 1px solid rgba(198, 255, 0, 0.7);
+      background: #111;
+      transform: rotate(45deg);
+    }
+
+    .peer-popover[hidden] {
+      display: none;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 87px;
+      padding: 16px 28px 12px;
+      border-radius: 34px 34px 0 0;
+      background: #020202;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.8);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: start;
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #9b9ba0;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .nav-item.active {
+      color: var(--lime);
+    }
+
+    .nav-item svg {
+      width: 26px;
+      height: 26px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active svg {
+      stroke-width: 2.1;
+    }
+
+    @media (max-width: 374px) {
+      .screen {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .profile {
+        margin-top: 22px;
+        grid-template-columns: 70px 1fr;
+        column-gap: 9px;
+      }
+
+      .avatar {
+        width: 66px;
+        height: 66px;
+      }
+
+      .handle {
+        font-size: 18px;
+      }
+
+      .pro {
+        height: 19px;
+        padding: 0 8px;
+        font-size: 13px;
+      }
+
+      .date,
+      .category {
+        font-size: 12px;
+      }
+
+      .rank {
+        height: 20px;
+        font-size: 11px;
+        gap: 5px;
+        padding-right: 8px;
+      }
+
+      .performance-head {
+        margin-top: 22px;
+      }
+
+      .section-title {
+        font-size: 16px;
+      }
+
+      .help-popover {
+        width: min(250px, calc(100vw - 24px));
+        font-size: 11px;
+      }
+
+      .card {
+        margin-top: 14px;
+        min-height: 210px;
+        padding: 13px 14px 11px;
+      }
+
+      .gmv-row {
+        grid-template-columns: 118px 1fr;
+      }
+
+      .gmv-value {
+        font-size: 32px;
+      }
+
+      .stat:nth-child(n + 3) {
+        padding-left: 9px;
+        grid-template-rows: 19px 24px 14px;
+        min-height: 64px;
+      }
+
+      .stat:nth-child(3) {
+        padding-left: 0;
+      }
+
+      .stat:nth-child(n + 3) .label,
+      .stat:nth-child(n + 3) .peer {
+        font-size: 8px;
+      }
+
+      .peer-help {
+        width: 9px;
+        height: 9px;
+        font-size: 6px;
+      }
+
+      .peer-popover {
+        width: min(280px, calc(100vw - 24px));
+        font-size: 11px;
+      }
+
+      .stat:nth-child(n + 3) .value {
+        font-size: 16px;
+      }
+
+      .stat:nth-child(5) .label {
+        font-size: 7.5px;
+      }
+
+      .tabs {
+        gap: 5px;
+      }
+
+      .tab {
+        min-width: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen" aria-label="HitFinds Growth page">
+    <section class="status" aria-label="status bar">
+      <div class="status-left">
+        <span>20:14</span>
+        <span class="mute" aria-hidden="true"></span>
+      </div>
+      <div class="status-icons" aria-hidden="true">
+        <span class="signal"><span></span><span></span><span></span><span></span><span></span></span>
+        <span class="wifi"></span>
+        <span class="battery">24</span>
+      </div>
+    </section>
+
+    <header class="topbar">
+      <div class="brand" aria-label="HitFinds">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span><span class="hit">Hit</span><span class="accent">F</span><span class="finds">inds</span></span>
+      </div>
+      <div class="gear" aria-hidden="true">⚙</div>
+    </header>
+
+    <section class="profile">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="identity">
+        <div class="name-row">
+          <div class="handle">@tiezh...</div>
+        </div>
+        <div class="membership-row" aria-label="membership level and expiration">
+          <div class="pro">Pro</div>
+          <div class="date">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.2" fill="none" stroke="currentColor"></rect>
+              <path d="M7.5 3.5v4M16.5 3.5v4M4 10h16M8 13.5h2M12 13.5h2M16 13.5h1M8 17h2M12 17h2M16 17h1" stroke="currentColor"></path>
+            </svg>
+            <span>2027-09-22</span>
+            <span class="chev" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="category">Home, Furniture &amp; Appliances</div>
+        <div class="rank">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 3.5h11a2 2 0 0 1 2 2v15l-7-3.5-7 3.5v-15a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor"></path>
+            <path d="m12 7.2 1.1 2.2 2.4.35-1.75 1.7.42 2.4L12 12.72 9.83 13.85l.42-2.4-1.75-1.7 2.4-.35L12 7.2Z" fill="none" stroke="currentColor"></path>
+          </svg>
+          <span>#14247 CATEGORY RANK</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="performance">
+      <div class="performance-head">
+        <div class="performance-title">
+          <div class="section-title">Performance</div>
+          <button class="help-button" type="button" aria-label="Show performance data note" aria-expanded="false" aria-controls="performance-help">?</button>
+          <div class="help-popover" id="performance-help" role="tooltip" hidden>Authorize your affiliate collaboration for accurate data.</div>
+        </div>
+        <div class="tabs" aria-label="period tabs">
+          <div class="tab active">7d</div>
+          <div class="tab">14d</div>
+          <div class="tab">28d</div>
+        </div>
+      </div>
+
+      <article class="card">
+        <div class="card-arrow" aria-hidden="true"></div>
+        <div class="metric-title">GMV · 7D</div>
+        <div class="gmv-row">
+          <div class="gmv-value">$0</div>
+          <div class="progress" aria-hidden="true">
+            <svg class="gmv-chart" viewBox="0 0 180 42" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="gmvArea" x1="0" y1="6" x2="0" y2="42" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#c6ff00" stop-opacity="0.24"></stop>
+                  <stop offset="1" stop-color="#c6ff00" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <path class="trend-area" d="M0 31 C18 25 26 29 42 22 S70 11 88 17 S116 32 136 18 S158 9 180 12 L180 42 L0 42 Z"></path>
+              <path class="trend-line" d="M0 31 C18 25 26 29 42 22 S70 11 88 17 S116 32 136 18 S158 9 180 12"></path>
+              <circle class="trend-halo" cx="180" cy="12" r="15"></circle>
+              <circle class="trend-point" cx="180" cy="12" r="7"></circle>
+            </svg>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="label">VIEWS</div>
+            <div class="value">11.2m</div>
+            <div class="peer">
+              <span class="peer-text">peer 679.1m</span>
+              <button class="peer-help" type="button" aria-label="Explain views peer" data-peer-note="Average views of shoppable videos from creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">ENGAGEMENT</div>
+            <div class="value">0.6%</div>
+            <div class="peer">
+              <span class="peer-text">peer 1.2%</span>
+              <button class="peer-help" type="button" aria-label="Explain engagement peer" data-peer-note="Average engagement of shoppable videos from creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">FOLLOWERS</div>
+            <div class="value">351</div>
+            <div class="peer">
+              <span class="peer-text">peer 0</span>
+              <button class="peer-help" type="button" aria-label="Explain followers peer" data-peer-note="Average follower count of creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">VIDEOS</div>
+            <div class="value">19</div>
+            <div class="peer">
+              <span class="peer-text">peer 364</span>
+              <button class="peer-help" type="button" aria-label="Explain videos peer" data-peer-note="Average number of shoppable videos posted by creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">COMM EARNINGS</div>
+            <div class="value">$395.1</div>
+            <div class="peer">
+              <span class="peer-text">peer $1567.9</span>
+              <button class="peer-help" type="button" aria-label="Explain commission earnings peer" data-peer-note="Average commission earned by creators in your same category.">?</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <nav class="bottom-nav" aria-label="bottom navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"></path>
+          <path d="M5.5 10.5V21h5v-6h3v6h5V10.5"></path>
+        </svg>
+        <span>Content</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20h16"></path>
+          <path d="M5 16h3v4H5zM10.5 12h3v8h-3zM16 8h3v12h-3z"></path>
+          <path d="m5 13 5-4 4 3 6-7"></path>
+          <path d="M16 5h4v4"></path>
+        </svg>
+        <span>Product</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"></path>
+          <path d="m19.4 15.2 1.1 2-2.2 3.8-2.3-.7a8.8 8.8 0 0 1-2 .95L13.5 23h-4l-.5-1.75a8.8 8.8 0 0 1-2-.95l-2.3.7-2.2-3.8 1.1-2a8.7 8.7 0 0 1 0-2.3l-1.1-2 2.2-3.8 2.3.7a8.8 8.8 0 0 1 2-.95L9.5 5h4l.5 1.85a8.8 8.8 0 0 1 2 .95l2.3-.7 2.2 3.8-1.1 2a8.7 8.7 0 0 1 0 2.3Z"></path>
+        </svg>
+        <span>Creator</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="7.5" r="4.5"></circle>
+          <path d="M4 22c.9-5 4-7.5 8-7.5s7.1 2.5 8 7.5"></path>
+        </svg>
+        <span>Growth</span>
+      </div>
+    </nav>
+  </main>
+  <script>
+    const helpButton = document.querySelector(".help-button");
+    const helpPopover = document.querySelector("#performance-help");
+    const peerButtons = document.querySelectorAll(".peer-help");
+    const peerPopover = document.createElement("div");
+    let activePeerButton = null;
+    peerPopover.className = "peer-popover";
+    peerPopover.hidden = true;
+    document.body.appendChild(peerPopover);
+
+    function setHelpOpen(isOpen) {
+      helpPopover.hidden = !isOpen;
+      helpButton.classList.toggle("is-open", isOpen);
+      helpButton.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        setPeerOpen(null);
+      }
+    }
+
+    function setPeerOpen(button) {
+      peerButtons.forEach((item) => item.classList.toggle("is-open", item === button));
+      if (!button) {
+        activePeerButton = null;
+        peerPopover.hidden = true;
+        peerPopover.textContent = "";
+        return;
+      }
+
+      activePeerButton = button;
+      peerPopover.textContent = button.dataset.peerNote;
+      peerPopover.hidden = false;
+      positionPeerPopover(button);
+      setHelpOpen(false);
+    }
+
+    function positionPeerPopover(button) {
+      const gap = 9;
+      const pagePadding = 14;
+      const buttonRect = button.getBoundingClientRect();
+      const popoverRect = peerPopover.getBoundingClientRect();
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+      const maxLeft = window.innerWidth - popoverRect.width - pagePadding;
+      const left = Math.min(Math.max(buttonCenter - popoverRect.width / 2, pagePadding), maxLeft);
+      const top = buttonRect.bottom + gap;
+      const arrowLeft = Math.min(Math.max(buttonCenter - left - 4, 12), popoverRect.width - 20);
+
+      peerPopover.style.left = `${left}px`;
+      peerPopover.style.top = `${top}px`;
+      peerPopover.style.setProperty("--arrow-left", `${arrowLeft}px`);
+    }
+
+    helpButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setHelpOpen(helpPopover.hidden);
+    });
+
+    helpPopover.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    peerButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setPeerOpen(button.classList.contains("is-open") ? null : button);
+      });
+    });
+
+    peerPopover.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+      setHelpOpen(false);
+      setPeerOpen(null);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setHelpOpen(false);
+        setPeerOpen(null);
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (activePeerButton) {
+        positionPeerPopover(activePeerButton);
+      }
+    });
+  </script>
+</body>
+</html>
