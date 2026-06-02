@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>HitFinds Performance</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --card: #121212;
+      --card-soft: #171717;
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --primary: #CCFF00;
+      --primary-dim: rgba(204, 255, 0, 0.16);
+      --text: #FFFFFF;
+      --muted: #A0A0A0;
+      --muted-2: #7E8290;
+      --blue: #6696FF;
+      --pink: #FF3D67;
+      --cyan: #00F2EA;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(100vw, 430px);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #000;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .screen {
+      min-height: 100vh;
+      padding: max(20px, env(safe-area-inset-top)) 16px 34px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 74px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mark {
+      width: 38px;
+      height: 58px;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+    }
+
+    .mark span {
+      width: 7px;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(180deg, #D8FF31, var(--primary));
+      box-shadow: 0 0 12px rgba(204, 255, 0, 0.38);
+    }
+
+    .mark span:nth-child(1) { height: 24px; }
+    .mark span:nth-child(2) { height: 32px; }
+    .mark span:nth-child(3) { height: 40px; }
+    .mark span:nth-child(4) { height: 50px; }
+
+    .brand-text {
+      font-size: 27px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-text .hit {
+      color: var(--text);
+    }
+
+    .brand-text .find {
+      color: var(--text);
+    }
+
+    .brand-text .accent {
+      color: var(--primary);
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #D9D9D9;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .icon-button svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .profile-head {
+      display: grid;
+      grid-template-columns: 106px 1fr;
+      align-items: center;
+      margin-top: 6px;
+      min-height: 104px;
+    }
+
+    .avatar-wrap {
+      width: 88px;
+      height: 88px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 0 2px rgba(204, 255, 0, 0.18), 0 0 22px rgba(204, 255, 0, 0.2);
+      background: #E9F4F6;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 47% 59%, #FFFFFF 0 4px, transparent 5px),
+        radial-gradient(circle at 48% 49%, #DDECEF 0 26px, transparent 27px),
+        radial-gradient(circle at 50% 50%, #CADCE0 0 35px, transparent 36px),
+        #EFF8FA;
+      position: relative;
+      border: 3px solid #B9CED4;
+    }
+
+    .avatar::before {
+      content: "KY SHOP";
+      position: absolute;
+      left: 20px;
+      top: 39px;
+      width: 44px;
+      height: 14px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #5E987B;
+      background: #9FC7B2;
+      font-size: 6px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      transform: rotate(-9deg);
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      left: 32px;
+      bottom: 8px;
+      width: 25px;
+      height: 14px;
+      border-radius: 50%;
+      background: #B94B34;
+      transform: rotate(12deg);
+    }
+
+    .profile-copy {
+      min-width: 0;
+    }
+
+    .username {
+      margin: 0 0 8px;
+      font-size: 29px;
+      line-height: 0.95;
+      font-weight: 930;
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      margin-bottom: 6px;
+    }
+
+    .pro-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      padding: 0 14px;
+      border-radius: 999px;
+      color: #050505;
+      background: var(--primary);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 920;
+      white-space: nowrap;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .meta-chip svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .category {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.12;
+      font-weight: 820;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank-strip {
+      height: 34px;
+      margin-left: 106px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-radius: 999px 16px 16px 999px;
+      color: #050505;
+      background: var(--primary);
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 920;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .rank-strip svg {
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .section-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 26px 0 13px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 910;
+      letter-spacing: 0;
+    }
+
+    .help-dot {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid #5A5D67;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .range-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .range-tabs button,
+    .pill-tabs button {
+      height: 40px;
+      min-width: 58px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 2px solid #4A4D58;
+      color: var(--muted);
+      background: #050505;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 930;
+    }
+
+    .range-tabs button.active,
+    .pill-tabs button.active {
+      color: #050505;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .performance-card {
+      width: 100%;
+      display: block;
+      text-align: left;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--line-strong);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 28%),
+        var(--card);
+      padding: 18px 20px 18px;
+      position: relative;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 910;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .open-arrow {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: #E6E6EA;
+      background: #2C2D34;
+    }
+
+    .open-arrow svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .hero-metric {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 12px;
+      align-items: end;
+      margin-top: 17px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .gmv-value {
+      font-size: 42px;
+      line-height: 0.88;
+      font-weight: 950;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .profile-spark {
+      min-width: 0;
+      height: 76px;
+    }
+
+    .profile-spark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .metric-cell {
+      min-width: 0;
+      padding: 17px 10px 7px 0;
+      border-right: 2px solid var(--line);
+    }
+
+    .metric-cell:nth-child(2),
+    .metric-cell:nth-child(5) {
+      padding-left: 16px;
+    }
+
+    .metric-cell:nth-child(2) {
+      grid-column: span 3;
+      border-right: 0;
+    }
+
+    .metric-cell:nth-child(1) {
+      grid-column: span 3;
+    }
+
+    .metric-cell:nth-child(n + 3) {
+      grid-column: span 2;
+      border-top: 2px solid var(--line);
+      padding-top: 20px;
+    }
+
+    .metric-cell:nth-child(5) {
+      border-right: 0;
+    }
+
+    .metric-name {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 910;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .metric-number {
+      margin-top: 12px;
+      color: var(--text);
+      font-size: 25px;
+      line-height: 0.9;
+      font-weight: 950;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .peer-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .tiny-help {
+      width: 18px;
+      height: 18px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid #686C77;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .tooltip {
+      width: min(84vw, 355px);
+      margin: -11px 20px 0 auto;
+      border: 2px solid rgba(204, 255, 0, 0.74);
+      border-radius: 22px;
+      background: #101010;
+      color: #F8F8F8;
+      padding: 14px 18px;
+      font-size: 16px;
+      line-height: 1.24;
+      font-weight: 850;
+      position: relative;
+    }
+
+    .tooltip::before {
+      content: "";
+      position: absolute;
+      top: -13px;
+      left: 56%;
+      width: 20px;
+      height: 20px;
+      background: #101010;
+      border-left: 2px solid rgba(204, 255, 0, 0.74);
+      border-top: 2px solid rgba(204, 255, 0, 0.74);
+      transform: rotate(45deg);
+    }
+
+    .profile-note {
+      margin: 28px 6px 0;
+      color: #696E7D;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 720;
+      text-align: center;
+    }
+
+    .detail-screen {
+      padding: max(30px, env(safe-area-inset-top)) 14px 36px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px 36px;
+      color: #FFFFFF;
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 820;
+    }
+
+    .system-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .signal {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 22px;
+    }
+
+    .signal span {
+      width: 5px;
+      border-radius: 3px;
+      background: #FFFFFF;
+    }
+
+    .signal span:nth-child(1) { height: 7px; }
+    .signal span:nth-child(2) { height: 11px; }
+    .signal span:nth-child(3) { height: 16px; }
+    .signal span:nth-child(4) { height: 21px; }
+
+    .wifi {
+      width: 28px;
+      height: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      border: 4px solid #FFFFFF;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .wifi::before {
+      width: 34px;
+      height: 34px;
+    }
+
+    .wifi::after {
+      width: 20px;
+      height: 20px;
+    }
+
+    .battery {
+      width: 36px;
+      height: 19px;
+      border: 3px solid #FFFFFF;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .battery::before {
+      content: "";
+      position: absolute;
+      right: -7px;
+      top: 4px;
+      width: 4px;
+      height: 7px;
+      border-radius: 0 3px 3px 0;
+      background: #FFFFFF;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 2px;
+      background: #FFFFFF;
+    }
+
+    .detail-nav {
+      display: grid;
+      grid-template-columns: 52px 1fr 52px;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+
+    .back-button {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      color: #FFFFFF;
+    }
+
+    .back-button svg {
+      width: 32px;
+      height: 32px;
+      stroke: currentColor;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .detail-title {
+      margin: 0;
+      text-align: center;
+      color: #FFFFFF;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 910;
+    }
+
+    .tab-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 6px;
+      margin: 0 4px 30px;
+      border: 2px solid var(--line-strong);
+      border-radius: 24px;
+      background: #101010;
+    }
+
+    .tab-switch button {
+      height: 59px;
+      border-radius: 14px;
+      color: #8790A4;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .tab-switch button.active {
+      color: #050505;
+      background: var(--primary);
+    }
+
+    .detail-section-title {
+      margin: 26px 6px 14px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 890;
+      letter-spacing: 0;
+    }
+
+    .detail-card {
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--line-strong);
+      background: var(--card);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .summary-card {
+      padding: 25px 24px;
+    }
+
+    .summary-title {
+      margin: 0 0 27px;
+      color: var(--primary);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 920;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding-bottom: 26px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .summary-row + .summary-row {
+      padding-top: 24px;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .small-label {
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+
+    .small-value {
+      margin-top: 8px;
+      color: var(--primary);
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .pill-tabs {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 26px 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .pill-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill-tabs button {
+      min-width: auto;
+      height: 39px;
+      padding: 0 20px;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 820;
+    }
+
+    .chart-card {
+      padding: 19px 20px 22px;
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 880;
+    }
+
+    .chart-subtitle {
+      margin-top: 8px;
+      color: #FFFFFF;
+      font-size: 17px;
+      line-height: 1.1;
+      font-weight: 860;
+    }
+
+    .select-pill {
+      min-height: 39px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 18px;
+      border-radius: 999px;
+      color: #050505;
+      background: var(--primary);
+      font-size: 17px;
+      line-height: 1;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .select-pill svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .big-chart {
+      width: 100%;
+      height: 260px;
+      margin-top: 8px;
+    }
+
+    .big-chart svg,
+    .mini-chart svg,
+    .donut svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .chart-dates {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      color: #738096;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 850;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .chart-dates span:nth-child(4) {
+      text-align: right;
+    }
+
+    .comparison-card {
+      padding: 19px 18px 22px;
+    }
+
+    .card-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-heading {
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1;
+      font-weight: 910;
+      text-transform: uppercase;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1;
+      font-weight: 820;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .dot.blue {
+      background: var(--blue);
+    }
+
+    .bar-row {
+      margin-top: 22px;
+    }
+
+    .bar-meta {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 770;
+    }
+
+    .bar-meta strong {
+      color: var(--primary);
+      font-weight: 890;
+    }
+
+    .bar-meta .blue-text {
+      color: var(--blue);
+    }
+
+    .stack-bar {
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--blue);
+      display: flex;
+    }
+
+    .stack-bar span {
+      display: block;
+      width: var(--w);
+      background: var(--primary);
+      border-radius: 999px;
+    }
+
+    .donut-card {
+      display: grid;
+      grid-template-columns: 156px 1fr;
+      align-items: center;
+      gap: 22px;
+      min-height: 172px;
+    }
+
+    .donut {
+      height: 140px;
+      position: relative;
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.05;
+      font-weight: 760;
+    }
+
+    .donut-center b {
+      display: block;
+      color: var(--text);
+      font-size: 27px;
+      line-height: 1.1;
+      font-weight: 920;
+    }
+
+    .donut-legend {
+      display: grid;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.05;
+      font-weight: 760;
+    }
+
+    .donut-legend b {
+      display: block;
+      margin-top: 4px;
+      color: var(--primary);
+      font-size: 22px;
+      font-weight: 930;
+    }
+
+    .donut-legend .blue-copy b {
+      color: var(--blue);
+    }
+
+    .benchmark-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .benchmark-row {
+      display: grid;
+      gap: 9px;
+    }
+
+    .benchmark-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.1;
+      font-weight: 830;
+    }
+
+    .benchmark-copy span:last-child {
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .progress {
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+    }
+
+    .ranking-grid {
+      display: grid;
+      grid-template-columns: 1fr 0.82fr;
+      gap: 12px;
+    }
+
+    .rank-tile {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.22);
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .rank-number {
+      margin-top: 10px;
+      color: var(--primary);
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 930;
+    }
+
+    .rank-sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 750;
+    }
+
+    .rank-up {
+      display: grid;
+      align-content: space-between;
+      min-height: 116px;
+      color: #050505;
+      background: var(--primary);
+    }
+
+    .rank-up-mark {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .rank-up .rank-sub,
+    .rank-up .small-label {
+      color: rgba(0, 0, 0, 0.62);
+    }
+
+    .rank-up .rank-number {
+      color: #050505;
+      font-size: 25px;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 0;
+      padding-left: 12px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 22px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.08));
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: 0;
+    }
+
+    .timeline-dot {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #0B0B0B;
+      border: 6px solid var(--primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-title {
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.1;
+      font-weight: 850;
+    }
+
+    .timeline-sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 720;
+    }
+
+    .timeline-date {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .highlight-strip {
+      display: flex;
+      gap: 11px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+
+    .highlight-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .highlight {
+      flex: 0 0 154px;
+      min-height: 126px;
+      border-radius: 18px;
+      border: 1px solid var(--line-strong);
+      background: var(--card);
+      padding: 16px;
+    }
+
+    .highlight-label {
+      min-height: 35px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.22;
+      font-weight: 780;
+    }
+
+    .highlight-value {
+      margin-top: 18px;
+      color: var(--text);
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 940;
+    }
+
+    .highlight-date {
+      margin-top: 8px;
+      color: var(--primary);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .month-item {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 16px;
+    }
+
+    .month-item .small-value {
+      color: var(--text);
+      font-size: 26px;
+    }
+
+    .change {
+      display: inline-flex;
+      margin-top: 10px;
+      color: var(--primary);
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 880;
+    }
+
+    .traffic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+
+    .traffic-item {
+      min-height: 96px;
+      padding: 18px 10px 20px 0;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .traffic-item:nth-child(odd) {
+      border-right: 0;
+    }
+
+    .traffic-item:nth-child(even) {
+      padding-left: 28px;
+    }
+
+    .traffic-item:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+
+    .traffic-value {
+      margin-top: 10px;
+      color: var(--primary);
+      font-size: 40px;
+      line-height: 1;
+      font-weight: 920;
+    }
+
+    .mini-chart {
+      height: 162px;
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 360px) {
+      .screen {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .profile-head {
+        grid-template-columns: 96px 1fr;
+      }
+
+      .avatar-wrap {
+        width: 80px;
+        height: 80px;
+      }
+
+      .avatar {
+        width: 72px;
+        height: 72px;
+      }
+
+      .username {
+        font-size: 25px;
+      }
+
+      .pro-pill {
+        height: 28px;
+        font-size: 18px;
+      }
+
+      .meta-chip {
+        font-size: 16px;
+      }
+
+      .category {
+        font-size: 15px;
+      }
+
+      .rank-strip {
+        margin-left: 96px;
+        font-size: 14px;
+      }
+
+      .section-title {
+        font-size: 21px;
+      }
+
+      .range-tabs {
+        gap: 6px;
+      }
+
+      .range-tabs button {
+        min-width: 52px;
+        height: 36px;
+        font-size: 19px;
+        padding: 0 10px;
+      }
+
+      .performance-card {
+        padding: 16px 17px 17px;
+      }
+
+      .gmv-value {
+        font-size: 37px;
+      }
+
+      .metric-number {
+        font-size: 22px;
+      }
+
+      .metric-name,
+      .peer-line {
+        font-size: 12px;
+      }
+
+      .tooltip {
+        font-size: 14px;
+      }
+
+      .status-row {
+        font-size: 21px;
+      }
+
+      .detail-title {
+        font-size: 23px;
+      }
+
+      .tab-switch button {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="screen profile-screen" id="profileScreen" aria-label="HitFinds profile">
+      <header class="topbar">
+        <div class="brand" aria-label="HitFinds">
+          <div class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <div class="brand-text"><span class="hit">Hit</span><span class="accent">F</span><span class="find">inds</span></div>
+        </div>
+        <button class="icon-button" type="button" aria-label="Settings">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2.2 2.2 0 0 1-3.11 3.11l-.05-.05a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65V21.5a2.2 2.2 0 0 1-4.4 0v-.08a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-1.98.36l-.05.05a2.2 2.2 0 0 1-3.11-3.11l.05-.05A1.8 1.8 0 0 0 3.6 15a1.8 1.8 0 0 0-1.65-1.1H1.8a2.2 2.2 0 0 1 0-4.4h.08A1.8 1.8 0 0 0 3.53 8a1.8 1.8 0 0 0-.36-1.98l-.05-.05a2.2 2.2 0 0 1 3.11-3.11l.05.05A1.8 1.8 0 0 0 8 3.6a1.8 1.8 0 0 0 1.1-1.65V1.8a2.2 2.2 0 0 1 4.4 0v.08A1.8 1.8 0 0 0 15 3.53a1.8 1.8 0 0 0 1.98-.36l.05-.05a2.2 2.2 0 0 1 3.11 3.11l-.05.05A1.8 1.8 0 0 0 19.4 8c.21.61.78 1.03 1.43 1.03h.37a2.2 2.2 0 0 1 0 4.4h-.08A1.8 1.8 0 0 0 19.4 15z"/></svg>
+        </button>
+      </header>
+
+      <div class="profile-head">
+        <div class="avatar-wrap"><div class="avatar" aria-hidden="true"></div></div>
+        <div class="profile-copy">
+          <h1 class="username">@tiezh...</h1>
+          <div class="profile-row">
+            <span class="pro-pill">Pro</span>
+            <span class="meta-chip">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v4"/><path d="M17 2v4"/><path d="M3 9h18"/><path d="M5 5h14a2 2 0 0 1 2 2v14H3V7a2 2 0 0 1 2-2z"/><path d="M8 13h3"/><path d="M14 13h3"/><path d="M8 17h3"/><path d="M14 17h3"/></svg>
+              2027-09-22
+            </span>
+          </div>
+          <div class="category">Beauty & Personal Care</div>
+        </div>
+      </div>
+
+      <div class="rank-strip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v18l-6-4-6 4z"/><path d="m9 10 2 2 4-5"/><path d="m9 15 2-2 4 5"/></svg>
+        <span>#182 CATEGORY RANK</span>
+      </div>
+
+      <div class="section-line">
+        <div class="section-title">Performance <span class="help-dot">?</span></div>
+        <div class="range-tabs" aria-label="Performance range">
+          <button type="button" data-range="7">7d</button>
+          <button type="button" class="active" data-range="30">30d</button>
+          <button type="button" data-range="90">90d</button>
+        </div>
+      </div>
+
+      <button class="performance-card" type="button" id="openDetail" aria-label="Open performance details">
+        <div class="card-title-row">
+          <div class="metric-label">GMV · <span data-range-label>30D</span></div>
+          <div class="open-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></div>
+        </div>
+        <div class="hero-metric">
+          <div class="gmv-value" data-profile-gmv>$28.4K</div>
+          <div class="profile-spark" id="profileSpark"></div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric-cell">
+            <div class="metric-name">Views</div>
+            <div class="metric-number" data-profile-views>2.7m</div>
+            <div class="peer-line">peer 1.9m <span class="tiny-help">?</span></div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-name">Engagement</div>
+            <div class="metric-number" data-profile-er>5.8%</div>
+            <div class="peer-line">peer 4.2% <span class="tiny-help">?</span></div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-name">Followers</div>
+            <div class="metric-number" data-profile-followers>124.8K</div>
+            <div class="peer-line">peer 98.4K <span class="tiny-help">?</span></div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-name">Orders</div>
+            <div class="metric-number" data-profile-orders>1,284</div>
+            <div class="peer-line">peer 842 <span class="tiny-help">?</span></div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-name">Comm Earnings</div>
+            <div class="metric-number" data-profile-commission>$3.9K</div>
+            <div class="peer-line">peer $2.8K <span class="tiny-help">?</span></div>
+          </div>
+        </div>
+      </button>
+
+      <div class="tooltip">Same-category creator median for shoppable videos, orders, and shop revenue in the selected range.</div>
+      <p class="profile-note">Profile commerce data refreshes daily across TikTok Shop sales and traffic.</p>
+    </section>
+
+    <section class="screen detail-screen hidden" id="detailScreen" aria-label="Overview details">
+      <div class="status-row" aria-hidden="true">
+        <span>9:41</span>
+        <div class="system-icons"><div class="signal"><span></span><span></span><span></span><span></span></div><div class="wifi"></div><div class="battery"></div></div>
+      </div>
+
+      <nav class="detail-nav" aria-label="Details navigation">
+        <button class="back-button" type="button" id="backToProfile" aria-label="Back to profile">
+          <svg viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"/><path d="M9 12h12"/></svg>
+        </button>
+        <h2 class="detail-title">Overview Details</h2>
+        <div></div>
+      </nav>
+
+      <div class="tab-switch" role="tablist" aria-label="Overview details tabs">
+        <button type="button" class="active" data-detail-tab="sales">Sales Data</button>
+        <button type="button" data-detail-tab="traffic">Sales Traffic</button>
+      </div>
+
+      <div id="salesPanel" data-panel="sales">
+        <section class="detail-card summary-card" aria-label="Sales data totals">
+          <h3 class="summary-title">Total GMV: $28.4K</h3>
+          <div class="summary-row">
+            <div>
+              <div class="small-label">Orders</div>
+              <div class="small-value">1,284</div>
+            </div>
+            <div>
+              <div class="small-label">Category Rank</div>
+              <div class="small-value">#182</div>
+            </div>
+          </div>
+          <div class="summary-row">
+            <div>
+              <div class="small-label">Commission Earnings</div>
+              <div class="small-value">$3,916</div>
+            </div>
+            <div>
+              <div class="small-label">Conversion Rate</div>
+              <div class="small-value">3.2%</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="pill-tabs" aria-label="Trend range">
+          <button type="button" data-range="7">Last 7 days</button>
+          <button type="button" class="active" data-range="30">Last 30 days</button>
+          <button type="button" data-range="90">Last 90 days</button>
+        </div>
+
+        <section class="detail-card chart-card" aria-label="Commerce trend">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">Ecommerce Data</div>
+              <div class="chart-subtitle" id="trendSummary">Last 30 Days GMV: $28.4K</div>
+            </div>
+            <div class="select-pill">GMV <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
+          </div>
+          <div class="big-chart">
+            <svg id="mainTrend" viewBox="0 0 360 260" role="img" aria-label="GMV trend"></svg>
+          </div>
+          <div class="chart-dates" id="chartDates"><span>MAY 03</span><span>MAY 13</span><span>MAY 23</span><span>JUN 02</span></div>
+        </section>
+
+        <h3 class="detail-section-title">Sales Mix</h3>
+        <section class="detail-card comparison-card" aria-label="Video and live sales mix">
+          <div class="card-heading-row">
+            <div class="card-heading">Video vs Live</div>
+            <div class="legend"><span><i class="dot"></i>Video</span><span><i class="dot blue"></i>Live</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Collaborative Shops</span><strong>45</strong><strong class="blue-text">12</strong></div>
+            <div class="stack-bar"><span style="--w:79%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Showcased Products</span><strong>39</strong><strong class="blue-text">12</strong></div>
+            <div class="stack-bar"><span style="--w:76%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Total Orders</span><strong>1,037</strong><strong class="blue-text">247</strong></div>
+            <div class="stack-bar"><span style="--w:81%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Total GMV</span><strong>$22.9K</strong><strong class="blue-text">$5.5K</strong></div>
+            <div class="stack-bar"><span style="--w:80%"></span></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Sales Category Mix</h3>
+        <section class="detail-card donut-card" aria-label="Sales category mix">
+          <div class="donut">
+            <svg viewBox="0 0 160 160" aria-hidden="true">
+              <circle cx="80" cy="80" r="56" fill="none" stroke="#6696FF" stroke-width="22"/>
+              <circle cx="80" cy="80" r="56" fill="none" stroke="#CCFF00" stroke-width="22" stroke-dasharray="151 352" stroke-linecap="butt" transform="rotate(-90 80 80)"/>
+            </svg>
+            <div class="donut-center">Total<b>100%</b></div>
+          </div>
+          <div class="donut-legend">
+            <div><span><i class="dot"></i> Beauty & Personal Care</span><b>43%</b></div>
+            <div class="blue-copy"><span><i class="dot blue"></i> Others</span><b>57%</b></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Peer Benchmark</h3>
+        <section class="detail-card benchmark-list" aria-label="Peer benchmark">
+          <div class="benchmark-row"><div class="benchmark-copy"><span>GMV Percentile</span><span>Top 18%</span></div><div class="progress"><span style="--w:82%"></span></div></div>
+          <div class="benchmark-row"><div class="benchmark-copy"><span>Orders Percentile</span><span>Top 24%</span></div><div class="progress"><span style="--w:76%"></span></div></div>
+          <div class="benchmark-row"><div class="benchmark-copy"><span>ER Percentile</span><span>Top 35%</span></div><div class="progress"><span style="--w:65%"></span></div></div>
+          <div class="benchmark-row"><div class="benchmark-copy"><span>CVR Percentile</span><span>Top 29%</span></div><div class="progress"><span style="--w:71%"></span></div></div>
+          <div class="benchmark-row"><div class="benchmark-copy"><span>Followers Growth Percentile</span><span>Top 21%</span></div><div class="progress"><span style="--w:79%"></span></div></div>
+        </section>
+
+        <h3 class="detail-section-title">Category Ranking</h3>
+        <section class="detail-card" aria-label="Category ranking">
+          <div class="ranking-grid">
+            <div class="rank-tile">
+              <div class="small-label">Beauty Category</div>
+              <div class="rank-number">#182</div>
+              <div class="rank-sub">of 8,742 creators</div>
+            </div>
+            <div class="rank-tile rank-up">
+              <div class="rank-up-mark">↑</div>
+              <div>
+                <div class="small-label">Compared to last month</div>
+                <div class="rank-number">36 positions</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Creator Milestones</h3>
+        <section class="detail-card" aria-label="Creator milestones">
+          <div class="timeline">
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First 100 Orders</div><div class="timeline-sub">Beauty product sales</div></div><div class="timeline-date">Jan 22</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First $1K Commission</div><div class="timeline-sub">Monthly commission reached</div></div><div class="timeline-date">Feb 14</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First $10K GMV</div><div class="timeline-sub">Cumulative shop GMV</div></div><div class="timeline-date">Mar 03</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Highest GMV Day</div><div class="timeline-sub">$2,843 in daily GMV</div></div><div class="timeline-date">Mar 18</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Highest Orders Day</div><div class="timeline-sub">136 orders placed</div></div><div class="timeline-date">Apr 06</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Fastest Growth Week</div><div class="timeline-sub">+6.1K followers in 7 days</div></div><div class="timeline-date">May 17</div></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Performance Highlights</h3>
+        <section class="highlight-strip" aria-label="Performance highlights">
+          <article class="highlight"><div class="highlight-label">Highest GMV Day</div><div class="highlight-value">$2,843</div><div class="highlight-date">March 18</div></article>
+          <article class="highlight"><div class="highlight-label">Highest Commission Day</div><div class="highlight-value">$391</div><div class="highlight-date">April 6</div></article>
+          <article class="highlight"><div class="highlight-label">Most Viewed Video</div><div class="highlight-value">428K</div><div class="highlight-date">Views</div></article>
+          <article class="highlight"><div class="highlight-label">Highest Orders Day</div><div class="highlight-value">136</div><div class="highlight-date">April 6</div></article>
+        </section>
+
+        <h3 class="detail-section-title">Monthly Summary</h3>
+        <section class="detail-card" aria-label="Monthly summary">
+          <div class="month-grid">
+            <div class="month-item"><div class="small-label">GMV</div><div class="small-value">$28,430</div><span class="change">↑ 18%</span></div>
+            <div class="month-item"><div class="small-label">Orders</div><div class="small-value">1,284</div><span class="change">↑ 12%</span></div>
+            <div class="month-item"><div class="small-label">Commission</div><div class="small-value">$3,916</div><span class="change">↑ 21%</span></div>
+            <div class="month-item"><div class="small-label">Followers Growth</div><div class="small-value">+8.4%</div><span class="change">↑ 2.1 pts</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div id="trafficPanel" class="hidden" data-panel="traffic">
+        <h3 class="detail-section-title">Video Analytics</h3>
+        <section class="detail-card" aria-label="Video analytics">
+          <div class="traffic-grid">
+            <div class="traffic-item"><div class="small-label">Shoppable Videos</div><div class="traffic-value">19</div></div>
+            <div class="traffic-item"><div class="small-label">Total Views</div><div class="traffic-value">2.7M</div></div>
+            <div class="traffic-item"><div class="small-label">Avg. Views</div><div class="traffic-value">142K</div></div>
+            <div class="traffic-item"><div class="small-label">Engagement Rate</div><div class="traffic-value">5.8%</div></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Live Analytics</h3>
+        <section class="detail-card" aria-label="Live analytics">
+          <div class="traffic-grid">
+            <div class="traffic-item"><div class="small-label">Shoppable Live</div><div class="traffic-value">8</div></div>
+            <div class="traffic-item"><div class="small-label">Peak Viewers</div><div class="traffic-value">24.6K</div></div>
+            <div class="traffic-item"><div class="small-label">Avg. Viewers</div><div class="traffic-value">6.8K</div></div>
+            <div class="traffic-item"><div class="small-label">Highest Peak</div><div class="traffic-value">41K</div></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Traffic Trend</h3>
+        <section class="detail-card chart-card" aria-label="Traffic trend">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">Video Views</div>
+              <div class="chart-subtitle">Last 30 Days Views: 2.7M</div>
+            </div>
+            <div class="select-pill">Views <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
+          </div>
+          <div class="big-chart">
+            <svg id="trafficTrend" viewBox="0 0 360 260" role="img" aria-label="Video views trend"></svg>
+          </div>
+          <div class="chart-dates"><span>MAY 03</span><span>MAY 13</span><span>MAY 23</span><span>JUN 02</span></div>
+        </section>
+
+        <h3 class="detail-section-title">Traffic Mix</h3>
+        <section class="detail-card comparison-card" aria-label="Traffic mix">
+          <div class="card-heading-row">
+            <div class="card-heading">Video vs Live</div>
+            <div class="legend"><span><i class="dot"></i>Video</span><span><i class="dot blue"></i>Live</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Total Views</span><strong>2.1M</strong><strong class="blue-text">640K</strong></div>
+            <div class="stack-bar"><span style="--w:77%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Orders</span><strong>1,037</strong><strong class="blue-text">247</strong></div>
+            <div class="stack-bar"><span style="--w:81%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Commission</span><strong>$3.1K</strong><strong class="blue-text">$816</strong></div>
+            <div class="stack-bar"><span style="--w:79%"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span>Followers Growth</span><strong>+7.2K</strong><strong class="blue-text">+1.9K</strong></div>
+            <div class="stack-bar"><span style="--w:79%"></span></div>
+          </div>
+        </section>
+
+        <h3 class="detail-section-title">Follower Growth</h3>
+        <section class="detail-card" aria-label="Follower growth">
+          <div class="two-column">
+            <div class="rank-tile"><div class="small-label">Followers</div><div class="rank-number">124.8K</div><div class="rank-sub">Current profile total</div></div>
+            <div class="rank-tile"><div class="small-label">Growth</div><div class="rank-number">+8.4%</div><div class="rank-sub">This month</div></div>
+          </div>
+          <div class="mini-chart"><svg id="growthTrend" viewBox="0 0 360 162" role="img" aria-label="Follower growth trend"></svg></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ranges = {
+      7: {
+        label: "7D",
+        gmv: "$7.4K",
+        views: "698K",
+        er: "5.4%",
+        followers: "124.8K",
+        orders: "326",
+        commission: "$1.0K",
+        trendText: "Last 7 Days GMV: $7.4K",
+        dates: ["MAY 27", "MAY 29", "MAY 31", "JUN 02"],
+        main: [36, 48, 42, 59, 68, 61, 78],
+        profile: [24, 29, 35, 42, 39, 52, 58],
+        traffic: [38, 52, 49, 63, 72, 69, 82],
+        growth: [18, 22, 26, 32, 39, 43, 50]
+      },
+      30: {
+        label: "30D",
+        gmv: "$28.4K",
+        views: "2.7m",
+        er: "5.8%",
+        followers: "124.8K",
+        orders: "1,284",
+        commission: "$3.9K",
+        trendText: "Last 30 Days GMV: $28.4K",
+        dates: ["MAY 03", "MAY 13", "MAY 23", "JUN 02"],
+        main: [22, 25, 29, 34, 42, 50, 48, 41, 35, 46, 68, 88, 92, 80, 62, 42, 35, 44, 70, 86],
+        profile: [31, 37, 39, 46, 55, 61, 58, 49, 42, 48, 63, 72, 76, 69, 58, 51, 62, 80, 83, 78],
+        traffic: [35, 43, 46, 50, 58, 67, 61, 56, 49, 58, 76, 93, 88, 76, 66, 52, 49, 66, 78, 91],
+        growth: [14, 17, 20, 24, 27, 31, 34, 36, 39, 42, 45, 48, 51, 53, 57, 60, 63, 67, 70, 74]
+      },
+      90: {
+        label: "90D",
+        gmv: "$79.6K",
+        views: "7.9m",
+        er: "5.6%",
+        followers: "124.8K",
+        orders: "3,684",
+        commission: "$10.9K",
+        trendText: "Last 90 Days GMV: $79.6K",
+        dates: ["MAR 04", "APR 03", "MAY 03", "JUN 02"],
+        main: [18, 24, 30, 27, 38, 46, 55, 49, 44, 58, 69, 76, 72, 83, 91, 86, 98, 104],
+        profile: [20, 28, 33, 31, 42, 47, 57, 53, 50, 63, 72, 79, 77, 88, 96, 92, 103, 110],
+        traffic: [28, 36, 41, 38, 50, 58, 62, 59, 57, 68, 78, 86, 83, 90, 101, 97, 112, 118],
+        growth: [8, 11, 15, 19, 23, 28, 32, 35, 39, 44, 49, 54, 58, 63, 68, 72, 77, 82]
+      }
+    };
+
+    let activeRange = "30";
+
+    const profileScreen = document.getElementById("profileScreen");
+    const detailScreen = document.getElementById("detailScreen");
+    const salesPanel = document.getElementById("salesPanel");
+    const trafficPanel = document.getElementById("trafficPanel");
+
+    function toPoints(values, width, height, padX, padY) {
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const span = Math.max(1, max - min);
+      return values.map((value, index) => {
+        const x = padX + (index / Math.max(1, values.length - 1)) * (width - padX * 2);
+        const y = padY + (1 - ((value - min) / span)) * (height - padY * 2);
+        return [x, y];
+      });
+    }
+
+    function linePath(points) {
+      if (!points.length) return "";
+      return points.map((point, index) => `${index ? "L" : "M"}${point[0].toFixed(2)} ${point[1].toFixed(2)}`).join(" ");
+    }
+
+    function areaPath(points, height, padY) {
+      const first = points[0];
+      const last = points[points.length - 1];
+      return `${linePath(points)} L${last[0].toFixed(2)} ${height - padY} L${first[0].toFixed(2)} ${height - padY} Z`;
+    }
+
+    function renderProfileSpark(values) {
+      const el = document.getElementById("profileSpark");
+      const pts = toPoints(values, 190, 90, 4, 12);
+      const last = pts[pts.length - 1];
+      el.innerHTML = `
+        <svg viewBox="0 0 190 90" aria-hidden="true">
+          <defs>
+            <filter id="profileGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="profileArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#CCFF00" stop-opacity="0.26"/>
+              <stop offset="1" stop-color="#CCFF00" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="${areaPath(pts, 90, 12)}" fill="url(#profileArea)"></path>
+          <path d="${linePath(pts)}" fill="none" stroke="#CCFF00" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#profileGlow)"></path>
+          <circle cx="${last[0].toFixed(2)}" cy="${last[1].toFixed(2)}" r="14" fill="#CCFF00"></circle>
+          <circle cx="${last[0].toFixed(2)}" cy="${last[1].toFixed(2)}" r="28" fill="rgba(204,255,0,0.28)"></circle>
+        </svg>
+      `;
+    }
+
+    function renderAreaChart(id, values, color = "#CCFF00", withSecond = true) {
+      const svg = document.getElementById(id);
+      if (!svg) return;
+      const width = 360;
+      const height = id === "growthTrend" ? 162 : 260;
+      const padX = id === "growthTrend" ? 12 : 18;
+      const padY = id === "growthTrend" ? 14 : 24;
+      const pts = toPoints(values, width, height, padX, padY);
+      const secondValues = values.map((value, index) => value * (0.55 + (index % 5) * 0.035));
+      const pts2 = toPoints(secondValues, width, height, padX, padY);
+      const grid = [0, 1, 2].map(i => {
+        const y = padY + i * ((height - padY * 2) / 2);
+        return `<line x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+      }).join("");
+      const markers = [Math.floor(pts.length * 0.58), pts.length - 1].map(i => {
+        const point = pts[i];
+        return `<circle cx="${point[0].toFixed(2)}" cy="${point[1].toFixed(2)}" r="5" fill="${color}"></circle>`;
+      }).join("");
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="${id}Area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="${color}" stop-opacity="0.24"/>
+            <stop offset="1" stop-color="${color}" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="${id}Glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        ${grid}
+        ${withSecond ? `<path d="${linePath(pts2)}" fill="none" stroke="#6696FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"></path>` : ""}
+        <path d="${areaPath(pts, height, padY)}" fill="url(#${id}Area)"></path>
+        <path d="${linePath(pts)}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id}Glow)"></path>
+        ${markers}
+      `;
+    }
+
+    function setRange(range) {
+      activeRange = String(range);
+      const data = ranges[activeRange];
+      document.querySelectorAll("[data-range]").forEach(button => {
+        button.classList.toggle("active", button.dataset.range === activeRange);
+      });
+      document.querySelector("[data-range-label]").textContent = data.label;
+      document.querySelector("[data-profile-gmv]").textContent = data.gmv;
+      document.querySelector("[data-profile-views]").textContent = data.views;
+      document.querySelector("[data-profile-er]").textContent = data.er;
+      document.querySelector("[data-profile-followers]").textContent = data.followers;
+      document.querySelector("[data-profile-orders]").textContent = data.orders;
+      document.querySelector("[data-profile-commission]").textContent = data.commission;
+      document.getElementById("trendSummary").textContent = data.trendText;
+      document.getElementById("chartDates").innerHTML = data.dates.map(date => `<span>${date}</span>`).join("");
+      renderProfileSpark(data.profile);
+      renderAreaChart("mainTrend", data.main);
+      renderAreaChart("trafficTrend", data.traffic, "#CCFF00", true);
+      renderAreaChart("growthTrend", data.growth, "#CCFF00", false);
+    }
+
+    function setDetailTab(tabName) {
+      document.querySelectorAll("[data-detail-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.detailTab === tabName);
+      });
+      salesPanel.classList.toggle("hidden", tabName !== "sales");
+      trafficPanel.classList.toggle("hidden", tabName !== "traffic");
+      if (tabName === "traffic") {
+        renderAreaChart("trafficTrend", ranges[activeRange].traffic, "#CCFF00", true);
+        renderAreaChart("growthTrend", ranges[activeRange].growth, "#CCFF00", false);
+      }
+    }
+
+    document.querySelectorAll("[data-range]").forEach(button => {
+      button.addEventListener("click", event => {
+        event.stopPropagation();
+        setRange(button.dataset.range);
+      });
+    });
+
+    document.querySelectorAll("[data-detail-tab]").forEach(button => {
+      button.addEventListener("click", () => setDetailTab(button.dataset.detailTab));
+    });
+
+    document.getElementById("openDetail").addEventListener("click", () => {
+      profileScreen.classList.add("hidden");
+      detailScreen.classList.remove("hidden");
+      setDetailTab("sales");
+      window.scrollTo(0, 0);
+      setRange(activeRange);
+    });
+
+    document.getElementById("backToProfile").addEventListener("click", () => {
+      detailScreen.classList.add("hidden");
+      profileScreen.classList.remove("hidden");
+      window.scrollTo(0, 0);
+    });
+
+    setRange(activeRange);
+  </script>
+</body>
+</html>
