@@ -1,610 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>HitFinds Performance</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HitFinds Growth</title>
   <style>
     :root {
-      --bg: #000000;
-      --card: #121212;
-      --card-soft: #171717;
-      --line: rgba(255, 255, 255, 0.1);
-      --line-strong: rgba(255, 255, 255, 0.16);
-      --primary: #CCFF00;
-      --primary-dim: rgba(204, 255, 0, 0.16);
-      --text: #FFFFFF;
-      --muted: #A0A0A0;
-      --muted-2: #7E8290;
-      --blue: #6696FF;
-      --pink: #FF3D67;
-      --cyan: #00F2EA;
-      --radius-lg: 24px;
-      --radius-md: 18px;
-      --radius-sm: 10px;
+      --lime: #c6ff00;
+      --lime-soft: #bbff00;
+      --ink: #000;
+      --panel: #121212;
+      --panel-line: #242424;
+      --muted: #a6a6aa;
+      --dim: #76767c;
+      --white: #f7f7f7;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      background: var(--bg);
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #000;
+      color: var(--white);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-      letter-spacing: 0;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
-    }
-
-    button {
-      border: 0;
-      padding: 0;
-      font: inherit;
-      color: inherit;
-      background: transparent;
-      cursor: pointer;
-    }
-
-    .app {
-      width: min(100vw, 430px);
-      min-height: 100vh;
-      margin: 0 auto;
-      background: #000;
+      display: grid;
+      place-items: start center;
       overflow-x: hidden;
-      position: relative;
     }
 
     .screen {
-      min-height: 100vh;
-      padding: max(20px, env(safe-area-inset-top)) 16px 34px;
+      position: relative;
+      width: min(100vw, 390px);
+      min-height: 817px;
+      background: #000;
+      overflow: hidden;
+      padding: 0 12px 118px;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    .topbar {
+    .status {
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 74px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .mark {
-      width: 38px;
-      height: 58px;
-      display: flex;
-      align-items: flex-end;
-      gap: 3px;
-    }
-
-    .mark span {
-      width: 7px;
-      border-radius: 3px 3px 0 0;
-      background: linear-gradient(180deg, #D8FF31, var(--primary));
-      box-shadow: 0 0 12px rgba(204, 255, 0, 0.38);
-    }
-
-    .mark span:nth-child(1) { height: 24px; }
-    .mark span:nth-child(2) { height: 32px; }
-    .mark span:nth-child(3) { height: 40px; }
-    .mark span:nth-child(4) { height: 50px; }
-
-    .brand-text {
-      font-size: 27px;
-      line-height: 1;
+      padding: 17px 28px 0 29px;
       font-weight: 900;
-      letter-spacing: 0;
-    }
-
-    .brand-text .hit {
-      color: var(--text);
-    }
-
-    .brand-text .find {
-      color: var(--text);
-    }
-
-    .brand-text .accent {
-      color: var(--primary);
-    }
-
-    .icon-button {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #D9D9D9;
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .icon-button svg {
-      width: 24px;
-      height: 24px;
-      stroke: currentColor;
-      stroke-width: 2.4;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .profile-head {
-      display: grid;
-      grid-template-columns: 106px 1fr;
-      align-items: center;
-      margin-top: 6px;
-      min-height: 104px;
-    }
-
-    .avatar-wrap {
-      width: 88px;
-      height: 88px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 3px solid var(--primary);
-      box-shadow: 0 0 0 2px rgba(204, 255, 0, 0.18), 0 0 22px rgba(204, 255, 0, 0.2);
-      background: #E9F4F6;
-    }
-
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 47% 59%, #FFFFFF 0 4px, transparent 5px),
-        radial-gradient(circle at 48% 49%, #DDECEF 0 26px, transparent 27px),
-        radial-gradient(circle at 50% 50%, #CADCE0 0 35px, transparent 36px),
-        #EFF8FA;
-      position: relative;
-      border: 3px solid #B9CED4;
-    }
-
-    .avatar::before {
-      content: "KY SHOP";
-      position: absolute;
-      left: 20px;
-      top: 39px;
-      width: 44px;
-      height: 14px;
-      display: grid;
-      place-items: center;
-      border-radius: 999px;
-      color: #5E987B;
-      background: #9FC7B2;
-      font-size: 6px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
-      transform: rotate(-9deg);
-    }
-
-    .avatar::after {
-      content: "";
-      position: absolute;
-      left: 32px;
-      bottom: 8px;
-      width: 25px;
-      height: 14px;
-      border-radius: 50%;
-      background: #B94B34;
-      transform: rotate(12deg);
-    }
-
-    .profile-copy {
-      min-width: 0;
-    }
-
-    .username {
-      margin: 0 0 8px;
-      font-size: 29px;
-      line-height: 0.95;
-      font-weight: 930;
-      letter-spacing: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .profile-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      margin-bottom: 6px;
-    }
-
-    .pro-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 30px;
-      padding: 0 14px;
-      border-radius: 999px;
-      color: #050505;
-      background: var(--primary);
-      font-size: 20px;
-      line-height: 1;
-      font-weight: 920;
-      white-space: nowrap;
-    }
-
-    .meta-chip {
-      display: inline-flex;
-      align-items: center;
-      min-width: 0;
-      gap: 6px;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1;
-      font-weight: 820;
-      white-space: nowrap;
-    }
-
-    .meta-chip svg {
-      width: 15px;
-      height: 15px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      flex: 0 0 auto;
-    }
-
-    .category {
-      color: var(--muted);
       font-size: 17px;
-      line-height: 1.12;
-      font-weight: 820;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .rank-strip {
-      height: 34px;
-      margin-left: 106px;
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 14px;
-      border-radius: 999px 16px 16px 999px;
-      color: #050505;
-      background: var(--primary);
-      font-size: 16px;
       line-height: 1;
-      font-weight: 920;
-      white-space: nowrap;
-      overflow: hidden;
+      color: #f5f5f5;
     }
 
-    .rank-strip svg {
-      width: 19px;
-      height: 19px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      flex: 0 0 auto;
-    }
-
-    .section-line {
+    .status-left {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin: 26px 0 13px;
+      gap: 7px;
     }
 
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-      color: var(--muted);
-      font-size: 24px;
-      line-height: 1;
-      font-weight: 910;
-      letter-spacing: 0;
-    }
-
-    .help-dot {
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 2px solid #5A5D67;
-      color: var(--muted);
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .range-tabs {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 0 0 auto;
-    }
-
-    .range-tabs button,
-    .pill-tabs button {
-      height: 40px;
-      min-width: 58px;
-      padding: 0 12px;
-      border-radius: 999px;
-      border: 2px solid #4A4D58;
-      color: var(--muted);
-      background: #050505;
-      font-size: 22px;
-      line-height: 1;
-      font-weight: 930;
-    }
-
-    .range-tabs button.active,
-    .pill-tabs button.active {
-      color: #050505;
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-
-    .performance-card {
-      width: 100%;
-      display: block;
-      text-align: left;
-      border-radius: var(--radius-lg);
-      border: 2px solid var(--line-strong);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 28%),
-        var(--card);
-      padding: 18px 20px 18px;
+    .mute {
       position: relative;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    .card-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-    }
-
-    .metric-label {
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1;
-      font-weight: 910;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .open-arrow {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: 50%;
-      color: #E6E6EA;
-      background: #2C2D34;
-    }
-
-    .open-arrow svg {
-      width: 24px;
-      height: 24px;
-      stroke: currentColor;
-      stroke-width: 4;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .hero-metric {
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 12px;
-      align-items: end;
-      margin-top: 17px;
-      padding-bottom: 18px;
-      border-bottom: 2px solid var(--line);
-    }
-
-    .gmv-value {
-      font-size: 42px;
-      line-height: 0.88;
-      font-weight: 950;
-      letter-spacing: 0;
-      white-space: nowrap;
-    }
-
-    .profile-spark {
-      min-width: 0;
-      height: 76px;
-    }
-
-    .profile-spark svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      overflow: visible;
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-    }
-
-    .metric-cell {
-      min-width: 0;
-      padding: 17px 10px 7px 0;
-      border-right: 2px solid var(--line);
-    }
-
-    .metric-cell:nth-child(2),
-    .metric-cell:nth-child(5) {
-      padding-left: 16px;
-    }
-
-    .metric-cell:nth-child(2) {
-      grid-column: span 3;
-      border-right: 0;
-    }
-
-    .metric-cell:nth-child(1) {
-      grid-column: span 3;
-    }
-
-    .metric-cell:nth-child(n + 3) {
-      grid-column: span 2;
-      border-top: 2px solid var(--line);
-      padding-top: 20px;
-    }
-
-    .metric-cell:nth-child(5) {
-      border-right: 0;
-    }
-
-    .metric-name {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1;
-      font-weight: 910;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .metric-number {
-      margin-top: 12px;
-      color: var(--text);
-      font-size: 25px;
-      line-height: 0.9;
-      font-weight: 950;
-      letter-spacing: 0;
-      white-space: nowrap;
-    }
-
-    .peer-line {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 13px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .tiny-help {
-      width: 18px;
-      height: 18px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 2px solid #686C77;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1;
-      font-weight: 900;
-    }
-
-    .tooltip {
-      width: min(84vw, 355px);
-      margin: -11px 20px 0 auto;
-      border: 2px solid rgba(204, 255, 0, 0.74);
-      border-radius: 22px;
-      background: #101010;
-      color: #F8F8F8;
-      padding: 14px 18px;
-      font-size: 16px;
-      line-height: 1.24;
-      font-weight: 850;
-      position: relative;
-    }
-
-    .tooltip::before {
-      content: "";
-      position: absolute;
-      top: -13px;
-      left: 56%;
-      width: 20px;
-      height: 20px;
-      background: #101010;
-      border-left: 2px solid rgba(204, 255, 0, 0.74);
-      border-top: 2px solid rgba(204, 255, 0, 0.74);
+      width: 17px;
+      height: 17px;
       transform: rotate(45deg);
     }
 
-    .profile-note {
-      margin: 28px 6px 0;
-      color: #696E7D;
-      font-size: 12px;
-      line-height: 1.35;
-      font-weight: 720;
-      text-align: center;
+    .mute::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 5px;
+      width: 12px;
+      height: 8px;
+      border-radius: 2px;
+      background: #f2f2f2;
+      clip-path: polygon(0 25%, 38% 25%, 76% 0, 76% 100%, 38% 75%, 0 75%);
     }
 
-    .detail-screen {
-      padding: max(30px, env(safe-area-inset-top)) 14px 36px;
+    .mute::after {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 8px;
+      width: 21px;
+      height: 3px;
+      border-radius: 3px;
+      background: #f2f2f2;
     }
 
-    .status-row {
+    .status-icons {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 4px 36px;
-      color: #FFFFFF;
-      font-size: 29px;
-      line-height: 1;
-      font-weight: 820;
-    }
-
-    .system-icons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .signal {
-      display: flex;
-      align-items: flex-end;
+      display: grid;
+      grid-template-columns: repeat(5, 4px);
+      align-items: end;
       gap: 3px;
-      height: 22px;
+      height: 17px;
     }
 
     .signal span {
-      width: 5px;
-      border-radius: 3px;
-      background: #FFFFFF;
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: #f7f7f7;
     }
 
-    .signal span:nth-child(1) { height: 7px; }
-    .signal span:nth-child(2) { height: 11px; }
-    .signal span:nth-child(3) { height: 16px; }
-    .signal span:nth-child(4) { height: 21px; }
+    .signal span:nth-child(1) { height: 5px; }
+    .signal span:nth-child(2) { height: 8px; }
+    .signal span:nth-child(3) { height: 11px; }
+    .signal span:nth-child(4) { height: 14px; }
+    .signal span:nth-child(5) { height: 17px; }
 
     .wifi {
-      width: 28px;
-      height: 22px;
       position: relative;
+      width: 24px;
+      height: 18px;
       overflow: hidden;
     }
 
@@ -613,1299 +131,2674 @@
       content: "";
       position: absolute;
       left: 50%;
-      bottom: 0;
-      border: 4px solid #FFFFFF;
-      border-left-color: transparent;
-      border-right-color: transparent;
-      border-bottom-color: transparent;
-      border-radius: 50%;
       transform: translateX(-50%);
+      border: 4px solid #f7f7f7;
+      border-color: #f7f7f7 transparent transparent transparent;
+      border-radius: 50%;
     }
 
     .wifi::before {
-      width: 34px;
-      height: 34px;
+      top: 0;
+      width: 28px;
+      height: 28px;
     }
 
     .wifi::after {
-      width: 20px;
-      height: 20px;
+      top: 8px;
+      width: 15px;
+      height: 15px;
+      border-width: 4px;
     }
 
     .battery {
-      width: 36px;
-      height: 19px;
-      border: 3px solid #FFFFFF;
-      border-radius: 5px;
       position: relative;
-    }
-
-    .battery::before {
-      content: "";
-      position: absolute;
-      right: -7px;
-      top: 4px;
-      width: 4px;
-      height: 7px;
-      border-radius: 0 3px 3px 0;
-      background: #FFFFFF;
+      width: 28px;
+      height: 17px;
+      border-radius: 5px;
+      background: #cfcfd1;
+      color: #050505;
+      font-weight: 1000;
+      font-size: 13px;
+      line-height: 17px;
+      text-align: center;
+      letter-spacing: -0.2px;
     }
 
     .battery::after {
       content: "";
       position: absolute;
-      inset: 3px;
-      border-radius: 2px;
-      background: #FFFFFF;
+      right: -3px;
+      top: 5px;
+      width: 2px;
+      height: 7px;
+      border-radius: 0 2px 2px 0;
+      background: #cfcfd1;
     }
 
-    .detail-nav {
-      display: grid;
-      grid-template-columns: 52px 1fr 52px;
+    .topbar {
+      margin-top: 30px;
+      display: flex;
       align-items: center;
-      margin-bottom: 48px;
+      justify-content: space-between;
+      height: 36px;
     }
 
-    .back-button {
-      width: 48px;
-      height: 48px;
+    .brand {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      font-size: 22px;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 24px;
+      height: 25px;
+      display: grid;
+      grid-template-columns: repeat(4, 5px);
+      align-items: end;
+      gap: 1.5px;
+      transform: skewY(-23deg);
+      margin-bottom: 2px;
+    }
+
+    .brand-mark span {
+      width: 5px;
+      border-radius: 2px 2px 0 0;
+      background: var(--lime);
+      box-shadow: 0 0 2px rgba(198, 255, 0, 0.55);
+    }
+
+    .brand-mark span:nth-child(1) { height: 15px; }
+    .brand-mark span:nth-child(2) { height: 19px; }
+    .brand-mark span:nth-child(3) { height: 23px; }
+    .brand-mark span:nth-child(4) { height: 27px; transform: translateY(-3px); }
+
+    .brand .hit {
+      color: #f4f4f4;
+    }
+
+    .brand .finds {
+      color: #f4f4f4;
+    }
+
+    .brand .accent {
+      color: var(--lime);
+    }
+
+    .gear {
+      width: 35px;
+      height: 35px;
       display: grid;
       place-items: center;
-      color: #FFFFFF;
-    }
-
-    .back-button svg {
-      width: 32px;
-      height: 32px;
-      stroke: currentColor;
-      stroke-width: 3;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .detail-title {
-      margin: 0;
-      text-align: center;
-      color: #FFFFFF;
-      font-size: 30px;
+      margin-right: 8px;
+      color: #a9aaae;
+      font-size: 28px;
       line-height: 1;
-      font-weight: 910;
+      filter: drop-shadow(0 0 1px #fff);
     }
 
-    .tab-switch {
+    .profile {
+      margin-top: 24px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      padding: 6px;
-      margin: 0 4px 30px;
-      border: 2px solid var(--line-strong);
-      border-radius: 24px;
-      background: #101010;
+      grid-template-columns: 78px 1fr;
+      column-gap: 12px;
+      align-items: center;
     }
 
-    .tab-switch button {
-      height: 59px;
-      border-radius: 14px;
-      color: #8790A4;
-      font-size: 22px;
-      line-height: 1;
-      font-weight: 850;
+    .avatar {
+      width: 74px;
+      height: 74px;
+      border: 2px solid var(--lime);
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 47% 54%, rgba(255, 255, 255, 0.85) 0 3px, transparent 4px),
+        radial-gradient(circle at 47% 56%, #dce7ed 0 22px, #c2d3d8 23px 28px, transparent 29px),
+        radial-gradient(circle at 51% 48%, rgba(78, 112, 136, 0.95) 0 24px, transparent 25px),
+        radial-gradient(circle at 50% 58%, #edf5f4 0 33px, #a5b8bb 34px 37px, transparent 38px),
+        radial-gradient(circle at 50% 50%, #0e1218 0 48%, #050506 60%);
+      box-shadow: 0 0 0 1px rgba(198, 255, 0, 0.15);
     }
 
-    .tab-switch button.active {
+    .avatar::before {
+      content: "KY SHOP";
+      position: absolute;
+      left: 18px;
+      top: 39px;
+      width: 40px;
+      height: 11px;
+      transform: rotate(-9deg);
+      border-radius: 8px;
+      background: rgba(178, 207, 181, 0.9);
+      color: #6a9d83;
+      font-size: 4px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 11px;
+      letter-spacing: 0.8px;
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 54px;
+      width: 19px;
+      height: 12px;
+      border-radius: 50% 50% 38% 38%;
+      background: linear-gradient(135deg, #df694e, #87352f);
+      transform: rotate(15deg);
+      box-shadow:
+        -10px -40px 0 -8px rgba(255, 255, 255, 0.15),
+        21px -34px 0 -9px rgba(255, 255, 255, 0.2),
+        11px 8px 0 -7px rgba(255, 255, 255, 0.55);
+    }
+
+    .identity {
+      min-width: 0;
+      padding-top: 1px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .handle {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing: -0.5px;
+    }
+
+    .membership-row {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .pro {
+      height: 21px;
+      padding: 0 9px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--lime);
       color: #050505;
-      background: var(--primary);
-    }
-
-    .detail-section-title {
-      margin: 26px 6px 14px;
-      color: var(--muted);
-      font-size: 22px;
+      font-size: 14px;
+      font-weight: 1000;
       line-height: 1;
-      font-weight: 890;
-      letter-spacing: 0;
+      flex: 0 0 auto;
     }
 
-    .detail-card {
-      border-radius: var(--radius-lg);
-      border: 2px solid var(--line-strong);
-      background: var(--card);
-      padding: 24px;
+    .date {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #a0a0a5;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      min-width: 0;
       overflow: hidden;
     }
 
-    .summary-card {
-      padding: 25px 24px;
+    .date svg {
+      width: 13px;
+      height: 13px;
+      stroke-width: 2.8;
+      flex: 0 0 auto;
     }
 
-    .summary-title {
-      margin: 0 0 27px;
-      color: var(--primary);
-      font-size: 30px;
-      line-height: 1;
-      font-weight: 920;
+    .date span:not(.chev) {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .summary-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      padding-bottom: 26px;
-      border-bottom: 2px solid var(--line);
+    .chev {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-top: 2px solid #a0a0a5;
+      border-right: 2px solid #a0a0a5;
+      transform: rotate(45deg);
+      margin-left: 1px;
+      flex: 0 0 auto;
     }
 
-    .summary-row + .summary-row {
-      padding-top: 24px;
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-
-    .small-label {
-      color: var(--muted);
-      font-size: 19px;
-      line-height: 1.05;
-      font-weight: 800;
-    }
-
-    .small-value {
-      margin-top: 8px;
-      color: var(--primary);
-      font-size: 31px;
-      line-height: 1;
-      font-weight: 900;
+    .category {
+      margin-top: 5px;
+      color: #a8a8ad;
+      font-size: 13px;
+      font-weight: 950;
       white-space: nowrap;
+      letter-spacing: 0.2px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .pill-tabs {
+    .rank {
+      margin-top: 6px;
+      width: min(100%, fit-content);
+      max-width: 100%;
+      height: 22px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin: 26px 2px;
-      overflow-x: auto;
-      scrollbar-width: none;
+      gap: 6px;
+      padding: 0 9px 0 8px;
+      border-radius: 14px;
+      background: var(--lime);
+      color: #090909;
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing: 0.35px;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
-    .pill-tabs::-webkit-scrollbar {
+    .rank svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.7;
+      flex: 0 0 auto;
+    }
+
+    .rank span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .performance-head {
+      position: relative;
+      margin-top: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .performance-title {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 1000;
+      color: #a8a8ad;
+      letter-spacing: 0.2px;
+    }
+
+    .help-button {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #5c5c62;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+      color: #b6b6bb;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .help-button.is-open {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .help-popover {
+      position: absolute;
+      left: 0;
+      top: 28px;
+      z-index: 5;
+      width: min(285px, calc(100vw - 28px));
+      padding: 10px 12px;
+      border: 1px solid rgba(198, 255, 0, 0.7);
+      border-radius: 12px;
+      background: #111;
+      color: #f2f2f2;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: 0;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+    }
+
+    .help-popover::before {
+      content: "";
+      position: absolute;
+      left: 86px;
+      top: -5px;
+      width: 8px;
+      height: 8px;
+      border-left: 1px solid rgba(198, 255, 0, 0.7);
+      border-top: 1px solid rgba(198, 255, 0, 0.7);
+      background: #111;
+      transform: rotate(45deg);
+    }
+
+    .help-popover[hidden] {
       display: none;
     }
 
-    .pill-tabs button {
-      min-width: auto;
-      height: 39px;
-      padding: 0 20px;
-      color: var(--muted);
-      font-size: 17px;
-      font-weight: 820;
-    }
-
-    .chart-card {
-      padding: 19px 20px 22px;
-    }
-
-    .chart-head {
+    .tabs {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 12px;
+      gap: 7px;
     }
 
-    .chart-title {
-      color: var(--muted);
-      font-size: 22px;
+    .tab {
+      min-width: 48px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      border: 1px solid #5c5c62;
+      color: #b6b6bb;
+      font-size: 15px;
+      font-weight: 1000;
       line-height: 1;
-      font-weight: 880;
     }
 
-    .chart-subtitle {
-      margin-top: 8px;
-      color: #FFFFFF;
-      font-size: 17px;
-      line-height: 1.1;
-      font-weight: 860;
-    }
-
-    .select-pill {
-      min-height: 39px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0 18px;
-      border-radius: 999px;
+    .tab.active {
+      min-width: 46px;
+      border-color: transparent;
+      background: var(--lime);
       color: #050505;
-      background: var(--primary);
-      font-size: 17px;
-      line-height: 1;
-      font-weight: 760;
-      white-space: nowrap;
     }
 
-    .select-pill svg {
-      width: 14px;
-      height: 14px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .big-chart {
+    .card {
+      position: relative;
+      margin-top: 16px;
       width: 100%;
-      height: 260px;
-      margin-top: 8px;
+      min-height: 222px;
+      border-radius: 22px;
+      border: 1px solid #252525;
+      background: #121212;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+      padding: 14px 15px 12px;
     }
 
-    .big-chart svg,
-    .mini-chart svg,
-    .donut svg {
+    .card-arrow {
+      position: absolute;
+      right: 15px;
+      top: 13px;
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #222225;
+      color: #bfc0c2;
+    }
+
+    .card-arrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-top: 2.5px solid currentColor;
+      border-right: 2.5px solid currentColor;
+      transform: rotate(45deg);
+      margin-left: -2px;
+    }
+
+    .metric-title {
+      color: #a8a8ad;
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+    }
+
+    .gmv-row {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: 135px 1fr;
+      align-items: center;
+      min-height: 37px;
+    }
+
+    .gmv-value {
+      font-size: 35px;
+      font-weight: 1000;
+      letter-spacing: -1.4px;
+      line-height: 0.95;
+    }
+
+    .progress {
+      position: relative;
+      height: 42px;
+      margin: 0 32px 0 2px;
+    }
+
+    .gmv-chart {
       width: 100%;
       height: 100%;
       display: block;
       overflow: visible;
     }
 
-    .chart-dates {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      color: #738096;
-      font-size: 14px;
-      line-height: 1;
-      font-weight: 850;
-      text-transform: uppercase;
-      margin-top: 10px;
+    .gmv-chart .trend-line {
+      fill: none;
+      stroke: var(--lime);
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 2px rgba(198, 255, 0, 0.32));
     }
 
-    .chart-dates span:nth-child(4) {
-      text-align: right;
+    .gmv-chart .trend-area {
+      fill: url(#gmvArea);
+      opacity: 0.55;
     }
 
-    .comparison-card {
-      padding: 19px 18px 22px;
+    .gmv-chart .trend-point {
+      fill: var(--lime);
+      filter: drop-shadow(0 0 0 rgba(198, 255, 0, 1));
     }
 
-    .card-heading-row {
+    .gmv-chart .trend-halo {
+      fill: rgba(198, 255, 0, 0.38);
+    }
+
+    .card-divider {
+      width: 100%;
+      height: 1px;
+      background: #262626;
+      margin: 10px 0 10px;
+    }
+
+    .branding-kit {
+      margin-top: 14px;
+    }
+
+    .branding-trigger {
+      width: 100%;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .branding-card {
+      min-height: 78px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 13px;
+      padding: 15px 28px 15px 17px;
+      border: 1px solid #242424;
+      border-radius: 36px;
+      background: #111;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
     }
 
-    .card-heading {
-      color: var(--muted);
-      font-size: 23px;
+    .branding-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .branding-icon {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #ff2d55;
+      color: #fff;
+    }
+
+    .branding-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .branding-copy {
+      min-width: 0;
+    }
+
+    .branding-title {
+      color: #f4f4f4;
+      font-size: 14px;
+      font-weight: 1000;
       line-height: 1;
-      font-weight: 910;
+      letter-spacing: -0.1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .branding-meta {
+      margin-top: 6px;
+      color: #4b5567;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .branding-status-row {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .ready-badge {
+      min-width: 57px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      padding: 0 10px;
+      border-radius: 10px;
+      background: #1a2d20;
+      color: #4ade80;
+      font-size: 11px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: 2px;
+    }
+
+    .branding-chevron {
+      width: 9px;
+      height: 9px;
+      border-top: 2.4px solid #465062;
+      border-right: 2.4px solid #465062;
+      transform: rotate(45deg);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .stat {
+      min-height: 63px;
+      padding: 0 0 11px;
+      display: grid;
+      grid-template-rows: 18px 31px 16px;
+      align-content: start;
+    }
+
+    .stat:nth-child(1),
+    .stat:nth-child(2) {
+      grid-column: span 3;
+    }
+
+    .stat:nth-child(3),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      grid-column: span 2;
+      min-height: 74px;
+      grid-template-rows: 22px 27px 15px;
+    }
+
+    .stat:nth-child(2),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      border-left: 1px solid #252525;
+      padding-left: 12px;
+    }
+
+    .stat:nth-child(3),
+    .stat:nth-child(4),
+    .stat:nth-child(5) {
+      border-top: 1px solid #262626;
+      padding-top: 12px;
+      padding-bottom: 0;
+    }
+
+    .stat:nth-child(n + 3) .label {
+      font-size: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .stat:nth-child(n + 3) .value {
+      font-size: 18px;
+    }
+
+    .stat:nth-child(n + 3) .peer {
+      font-size: 10px;
+    }
+
+      .stat:nth-child(n + 3) .label,
+      .stat:nth-child(n + 3) .value,
+      .stat:nth-child(n + 3) .peer {
+        align-self: center;
+        margin-top: 0;
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+    .stat:nth-child(5) .label {
+      font-size: 9px;
+      letter-spacing: 0;
+    }
+
+    .label {
+      color: #a8a8ad;
+      font-size: 10px;
+      font-weight: 1000;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+
+    .value {
+      margin-top: 0;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 1000;
+      letter-spacing: -0.6px;
+      line-height: 1;
+    }
+
+    .peer {
+      margin-top: 0;
+      color: #a8a8ad;
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: 0.2px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .peer-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .peer-help {
+      width: 11px;
+      height: 11px;
+      border: 1px solid #68686f;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      padding: 0;
+      background: transparent;
+      color: #b9b9be;
+      font: inherit;
+      font-size: 7px;
+      font-weight: 1000;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .peer-help.is-open {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .peer-popover {
+      position: fixed;
+      z-index: 8;
+      width: min(292px, calc(100vw - 28px));
+      padding: 10px 12px;
+      border: 1px solid rgba(198, 255, 0, 0.7);
+      border-radius: 12px;
+      background: #111;
+      color: #f2f2f2;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .peer-popover::before {
+      content: "";
+      position: absolute;
+      left: var(--arrow-left, 18px);
+      top: -5px;
+      width: 8px;
+      height: 8px;
+      border-left: 1px solid rgba(198, 255, 0, 0.7);
+      border-top: 1px solid rgba(198, 255, 0, 0.7);
+      background: #111;
+      transform: rotate(45deg);
+    }
+
+    .peer-popover[hidden] {
+      display: none;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 87px;
+      padding: 16px 28px 12px;
+      border-radius: 34px 34px 0 0;
+      background: #020202;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.8);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: start;
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #9b9ba0;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .nav-item.active {
+      color: var(--lime);
+    }
+
+    .nav-item svg {
+      width: 26px;
+      height: 26px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active svg {
+      stroke-width: 2.1;
+    }
+
+    .screen[hidden] {
+      display: none;
+    }
+
+    .kit-screen,
+    .edit-screen {
+      padding: 0 20px 38px;
+      overflow: visible;
+    }
+
+    .kit-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 58px;
+      margin: 0 -20px;
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(14px);
+    }
+
+    .kit-title {
+      color: #f0f0f2;
+      font-size: 16px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -0.1px;
+    }
+
+    .kit-icon-button,
+    .kit-action {
+      border: 0;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .kit-icon-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      margin-left: -8px;
+      background: transparent;
+      color: #9899a0;
+    }
+
+    .kit-icon-button svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .kit-action {
+      min-width: 54px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      background: #1a1a1a;
+      color: #d5d5d8;
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
     }
 
-    .legend {
+    .kit-action.save {
+      border-color: rgba(184, 241, 8, 0.25);
+      background: var(--lime-soft);
+      color: #050505;
+      box-shadow: 0 0 15px rgba(184, 241, 8, 0.18);
+    }
+
+    .kit-content {
+      padding-top: 24px;
+    }
+
+    .kit-badge-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1;
-      font-weight: 820;
+      gap: 8px;
+      margin-bottom: 16px;
+      min-width: 0;
     }
 
-    .legend span {
-      display: inline-flex;
+    .kit-pill {
+      flex: 0 0 auto;
+      display: inline-grid;
+      place-items: center;
+      min-height: 20px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: rgba(184, 241, 8, 0.18);
+      color: var(--lime-soft);
+      font-size: 9px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: 0.2px;
+    }
+
+    .kit-caption {
+      min-width: 0;
+      color: #77787f;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .kit-section {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      background: #0a0a0a;
+    }
+
+    .poster-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-color: rgba(255, 255, 255, 0.11);
+    }
+
+    .poster-top,
+    .creator,
+    .poster-footer,
+    .gender-labels,
+    .rate-item,
+    .tip-card,
+    .setting-card,
+    .rate-row,
+    .counter {
+      display: flex;
+      align-items: center;
+    }
+
+    .poster-top {
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .kit-logo {
+      display: flex;
       align-items: center;
       gap: 6px;
+      min-width: 0;
     }
 
-    .dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--primary);
+    .kit-logo-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--lime-soft);
       flex: 0 0 auto;
     }
 
-    .dot.blue {
-      background: var(--blue);
-    }
-
-    .bar-row {
-      margin-top: 22px;
-    }
-
-    .bar-meta {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 9px;
-      color: var(--muted);
-      font-size: 18px;
+    .kit-logo span {
+      color: #fff;
+      font-size: 9px;
+      font-weight: 1000;
       line-height: 1;
-      font-weight: 770;
-    }
-
-    .bar-meta strong {
-      color: var(--primary);
-      font-weight: 890;
-    }
-
-    .bar-meta .blue-text {
-      color: var(--blue);
-    }
-
-    .stack-bar {
-      height: 12px;
-      border-radius: 999px;
+      letter-spacing: 1.4px;
+      white-space: nowrap;
       overflow: hidden;
-      background: var(--blue);
+      text-overflow: ellipsis;
+    }
+
+    .mini-edit {
+      min-height: 24px;
       display: flex;
-    }
-
-    .stack-bar span {
-      display: block;
-      width: var(--w);
-      background: var(--primary);
-      border-radius: 999px;
-    }
-
-    .donut-card {
-      display: grid;
-      grid-template-columns: 156px 1fr;
       align-items: center;
-      gap: 22px;
-      min-height: 172px;
+      gap: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #8d8e95;
+      padding: 0 10px;
+      font-size: 8px;
+      font-weight: 1000;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      flex: 0 0 auto;
     }
 
-    .donut {
-      height: 140px;
-      position: relative;
+    .mini-edit svg {
+      width: 9px;
+      height: 9px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .donut-center {
-      position: absolute;
-      inset: 0;
+    .creator {
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .creator-avatar {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 auto;
       display: grid;
       place-items: center;
-      text-align: center;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.05;
-      font-weight: 760;
-    }
-
-    .donut-center b {
-      display: block;
-      color: var(--text);
-      font-size: 27px;
-      line-height: 1.1;
-      font-weight: 920;
-    }
-
-    .donut-legend {
-      display: grid;
-      gap: 24px;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.05;
-      font-weight: 760;
-    }
-
-    .donut-legend b {
-      display: block;
-      margin-top: 4px;
-      color: var(--primary);
+      border: 2px solid rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d4145a 0%, #fb287a 48%, #ff9e00 100%);
+      color: #fff;
       font-size: 22px;
-      font-weight: 930;
+      font-weight: 1000;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
     }
 
-    .donut-legend .blue-copy b {
-      color: var(--blue);
+    .creator-info {
+      min-width: 0;
     }
 
-    .benchmark-list {
+    .creator-name {
+      color: #f3f3f4;
+      font-size: 22px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .creator-meta {
+      margin-top: 5px;
+      color: #77787f;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tiny-badge {
+      display: inline-grid;
+      place-items: center;
+      min-height: 20px;
+      margin-top: 9px;
+      padding: 0 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e4e4e6;
+      font-size: 8px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: 0.4px;
+    }
+
+    .pitch {
+      margin: 0 0 24px 2px;
+      padding-left: 10px;
+      border-left: 2px solid var(--lime-soft);
+      color: #d2d2d6;
+      font-size: 11px;
+      font-style: italic;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .poster-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .poster-stat {
+      min-width: 0;
+      padding-left: 8px;
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poster-stat:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .poster-stat strong {
+      display: block;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .poster-stat span {
+      display: block;
+      margin-top: 7px;
+      color: #6f7077;
+      font-size: 7px;
+      font-weight: 1000;
+      line-height: 1.1;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .poster-subtitle {
+      margin-bottom: 9px;
+      color: #676870;
+      font-size: 7px;
+      font-weight: 1000;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .performance-mini {
+      margin-bottom: 24px;
+    }
+
+    .gmv-summary {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .gmv-summary strong {
+      color: var(--lime-soft);
+      font-size: 25px;
+      font-weight: 1000;
+      line-height: 0.9;
+      letter-spacing: -0.8px;
+    }
+
+    .gmv-summary span {
+      color: #75767d;
+      font-size: 8px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .gmv-summary em {
+      margin-left: auto;
+      color: #77787f;
+      font-size: 8px;
+      font-style: normal;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .gmv-summary em b {
+      color: #fff;
+      font-weight: 1000;
+    }
+
+    .kit-progress {
+      height: 4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .kit-progress span {
+      display: block;
+      width: 80%;
+      height: 100%;
+      background: var(--lime-soft);
+    }
+
+    .performance-note {
+      margin-top: 7px;
+      color: #77787f;
+      font-size: 8px;
+      font-weight: 800;
+    }
+
+    .performance-note b {
+      color: #fff;
+      font-weight: 1000;
+    }
+
+    .audience {
+      margin-bottom: 24px;
+    }
+
+    .audience-stack {
       display: grid;
       gap: 18px;
     }
 
-    .benchmark-row {
+    .gender-labels {
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .gender-labels span {
+      color: #8c8d94;
+      font-size: 8px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: 0.3px;
+    }
+
+    .gender-labels strong {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .gender-female {
+      padding-left: 6px;
+      border-left: 1px solid #ec4899;
+    }
+
+    .gender-male {
+      padding-right: 6px;
+      border-right: 1px solid #3b82f6;
+      color: #666872 !important;
+    }
+
+    .stacked-bar {
+      height: 6px;
+      display: flex;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .stacked-bar span:first-child {
+      width: 88%;
+      background: rgba(236, 72, 153, 0.82);
+    }
+
+    .stacked-bar span:last-child {
+      width: 12%;
+      background: rgba(59, 130, 246, 0.62);
+    }
+
+    .audience-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .mini-bars {
       display: grid;
       gap: 9px;
     }
 
-    .benchmark-copy {
+    .bar-label {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      color: var(--text);
-      font-size: 17px;
-      line-height: 1.1;
-      font-weight: 830;
+      gap: 6px;
+      margin-bottom: 5px;
     }
 
-    .benchmark-copy span:last-child {
-      color: var(--primary);
+    .bar-label span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #70717a;
+      font-size: 7px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: 0.1px;
+      text-transform: uppercase;
+    }
+
+    .bar-label b {
+      color: #c9c9ce;
+      font-size: 8px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .mini-bar {
+      height: 3px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mini-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .mini-bars .highlight span,
+    .mini-bars .highlight b {
+      color: var(--lime-soft);
+    }
+
+    .mini-bars .highlight .mini-bar span {
+      background: var(--lime-soft);
+    }
+
+    .top-videos,
+    .worked-with,
+    .rate-card {
+      margin-bottom: 24px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .video-tile {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      align-items: end;
+      padding: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 7px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .video-tile:nth-child(1) {
+      background: linear-gradient(135deg, rgba(131, 24, 67, 0.52), rgba(34, 8, 22, 0.85));
+    }
+
+    .video-tile:nth-child(2) {
+      background: linear-gradient(135deg, rgba(91, 33, 182, 0.38), rgba(22, 10, 45, 0.86));
+    }
+
+    .video-tile:nth-child(3) {
+      background: linear-gradient(135deg, rgba(136, 19, 55, 0.42), rgba(39, 9, 20, 0.86));
+    }
+
+    .video-tile::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-38%, -50%);
+      border-left: 14px solid rgba(255, 255, 255, 0.78);
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+    }
+
+    .brand-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand-badges span {
+      min-height: 22px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      background: #1a1a1a;
+      color: #d0d0d5;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .rate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .rate-item {
+      min-height: 32px;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 9px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      background: #141414;
+    }
+
+    .rate-item.wide {
+      grid-column: 1 / -1;
+    }
+
+    .rate-item span {
+      min-width: 0;
+      color: #999aa1;
+      font-size: 8px;
+      font-weight: 1000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rate-item strong {
+      flex: 0 0 auto;
+      color: var(--lime-soft);
+      font-size: 10px;
+      font-weight: 1000;
       white-space: nowrap;
     }
 
-    .progress {
-      height: 11px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+    .rate-item .muted-value {
+      color: #fff;
+    }
+
+    .rate-item .open-value {
+      color: #4ade80;
+      font-size: 8px;
+    }
+
+    .rate-item .closed-value {
+      color: #f87171;
+      font-size: 8px;
+    }
+
+    .poster-footer {
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .contact-line {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #77787f;
+      font-size: 8px;
+      font-weight: 900;
+      white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .progress span {
-      display: block;
-      width: var(--w);
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), var(--cyan));
+    .contact-line svg {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .ranking-grid {
+    .made-with {
+      flex: 0 0 auto;
+      color: #3d3e44;
+      font-size: 7px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .tip-card {
+      gap: 16px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      padding: 20px;
+      border-color: rgba(184, 241, 8, 0.2);
+      background: rgba(184, 241, 8, 0.05);
+      align-items: flex-start;
+    }
+
+    .tip-icon {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
       display: grid;
-      grid-template-columns: 1fr 0.82fr;
-      gap: 12px;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(184, 241, 8, 0.18);
+      color: var(--lime-soft);
+      box-shadow: 0 10px 22px rgba(184, 241, 8, 0.08);
     }
 
-    .rank-tile {
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(0, 0, 0, 0.22);
-      padding: 18px;
+    .tip-icon svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: rgba(184, 241, 8, 0.25);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tip-body {
       min-width: 0;
     }
 
-    .rank-number {
-      margin-top: 10px;
-      color: var(--primary);
-      font-size: 38px;
-      line-height: 1;
-      font-weight: 930;
+    .tip-body h2 {
+      margin: 0 0 12px;
+      color: var(--lime-soft);
+      font-size: 14px;
+      font-weight: 1000;
+      line-height: 1.1;
+      letter-spacing: -0.1px;
     }
 
-    .rank-sub {
-      margin-top: 10px;
-      color: var(--muted);
+    .tip-body ol {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .tip-body li {
+      color: #9a9ba1;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .tip-body li b {
+      color: #f0f0f2;
+      font-weight: 1000;
+      margin-right: 3px;
+    }
+
+    .tip-body li span,
+    .tip-body p {
+      color: #77787f;
+      font-size: 10px;
+    }
+
+    .tip-body p {
+      margin: 14px 0 0;
+      font-style: italic;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .share-button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--lime-soft);
+      color: #050505;
+      font: inherit;
       font-size: 15px;
-      line-height: 1.15;
-      font-weight: 750;
+      font-weight: 1000;
+      letter-spacing: -0.1px;
+      box-shadow: 0 8px 24px rgba(184, 241, 8, 0.2);
+      cursor: pointer;
     }
 
-    .rank-up {
+    .home-indicator {
+      width: 128px;
+      height: 4px;
+      margin: 18px auto 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .edit-content {
+      padding-top: 24px;
       display: grid;
-      align-content: space-between;
-      min-height: 116px;
-      color: #050505;
-      background: var(--primary);
+      gap: 24px;
     }
 
-    .rank-up-mark {
-      font-size: 34px;
+    .form-group {
+      display: grid;
+      gap: 9px;
+    }
+
+    .form-label {
+      padding-left: 4px;
+      color: #77787f;
+      font-size: 10px;
+      font-weight: 1000;
       line-height: 1;
-      font-weight: 950;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
-    .rank-up .rank-sub,
-    .rank-up .small-label {
-      color: rgba(0, 0, 0, 0.62);
+    .form-control {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      background: #0d0d0d;
+      color: #e1e1e5;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      outline: none;
     }
 
-    .rank-up .rank-number {
-      color: #050505;
-      font-size: 25px;
+    textarea.form-control {
+      min-height: 100px;
+      resize: none;
+      padding: 14px 15px;
+      line-height: 1.45;
     }
 
-    .timeline {
-      position: relative;
+    input.form-control {
+      height: 50px;
+      padding: 0 15px;
+    }
+
+    .form-control:focus {
+      border-color: rgba(184, 241, 8, 0.55);
+    }
+
+    .rate-list {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      background: #0d0d0d;
+    }
+
+    .rate-row {
+      min-height: 65px;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .rate-row:first-child {
+      border-top: 0;
+    }
+
+    .rate-row label {
+      color: #aaaab0;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .money-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #77787f;
+      font-size: 14px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .money-field input {
+      width: 96px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--lime-soft);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 1000;
+      text-align: right;
+      padding: 0 10px;
+      outline: none;
+    }
+
+    .money-field input.bundle-input {
+      color: #fff;
+    }
+
+    .settings-stack {
       display: grid;
-      gap: 0;
-      padding-left: 12px;
+      gap: 16px;
     }
 
-    .timeline::before {
+    .setting-card {
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 74px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      background: #0d0d0d;
+    }
+
+    .setting-title {
+      color: #f0f0f2;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1.15;
+    }
+
+    .setting-note {
+      margin-top: 5px;
+      max-width: 190px;
+      color: #77787f;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 26px;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      background: #1f2937;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .switch::before {
       content: "";
       position: absolute;
-      top: 18px;
-      bottom: 18px;
-      left: 22px;
-      width: 2px;
-      background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.08));
-    }
-
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 32px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--line);
-      position: relative;
-    }
-
-    .timeline-item:last-child {
-      border-bottom: 0;
-    }
-
-    .timeline-dot {
-      width: 21px;
-      height: 21px;
+      left: 4px;
+      top: 4px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
-      background: #0B0B0B;
-      border: 6px solid var(--primary);
-      position: relative;
-      z-index: 1;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.38);
+      transition: transform 0.18s ease;
     }
 
-    .timeline-title {
-      color: var(--text);
-      font-size: 17px;
-      line-height: 1.1;
-      font-weight: 850;
+    .switch.is-on {
+      background: var(--lime-soft);
     }
 
-    .timeline-sub {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.15;
-      font-weight: 720;
+    .switch.is-on::before {
+      transform: translateX(18px);
     }
 
-    .timeline-date {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .highlight-strip {
-      display: flex;
-      gap: 11px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 2px;
-    }
-
-    .highlight-strip::-webkit-scrollbar {
-      display: none;
-    }
-
-    .highlight {
-      flex: 0 0 154px;
-      min-height: 126px;
-      border-radius: 18px;
-      border: 1px solid var(--line-strong);
-      background: var(--card);
-      padding: 16px;
-    }
-
-    .highlight-label {
-      min-height: 35px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.22;
-      font-weight: 780;
-    }
-
-    .highlight-value {
-      margin-top: 18px;
-      color: var(--text);
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 940;
-    }
-
-    .highlight-date {
-      margin-top: 8px;
-      color: var(--primary);
-      font-size: 13px;
-      line-height: 1;
-      font-weight: 850;
-    }
-
-    .month-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .counter {
       gap: 12px;
+      flex: 0 0 auto;
     }
 
-    .month-item {
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(0, 0, 0, 0.2);
-      padding: 16px;
+    .counter button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #b9bac0;
+      font: inherit;
+      font-size: 18px;
+      font-weight: 1000;
+      line-height: 1;
+      cursor: pointer;
     }
 
-    .month-item .small-value {
-      color: var(--text);
-      font-size: 26px;
-    }
-
-    .change {
-      display: inline-flex;
-      margin-top: 10px;
-      color: var(--primary);
+    .counter span {
+      width: 18px;
+      color: #fff;
+      text-align: center;
       font-size: 14px;
-      line-height: 1;
-      font-weight: 880;
+      font-weight: 1000;
     }
 
-    .traffic-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-    }
-
-    .traffic-item {
-      min-height: 96px;
-      padding: 18px 10px 20px 0;
-      border-bottom: 2px solid var(--line);
-    }
-
-    .traffic-item:nth-child(odd) {
-      border-right: 0;
-    }
-
-    .traffic-item:nth-child(even) {
-      padding-left: 28px;
-    }
-
-    .traffic-item:nth-last-child(-n + 2) {
-      border-bottom: 0;
-    }
-
-    .traffic-value {
-      margin-top: 10px;
-      color: var(--primary);
-      font-size: 40px;
-      line-height: 1;
-      font-weight: 920;
-    }
-
-    .mini-chart {
-      height: 162px;
-      margin-top: 14px;
-      border-top: 1px solid var(--line);
-      padding-top: 16px;
-    }
-
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    @media (max-width: 360px) {
+    @media (max-width: 374px) {
       .screen {
         padding-left: 10px;
         padding-right: 10px;
       }
 
-      .profile-head {
-        grid-template-columns: 96px 1fr;
-      }
-
-      .avatar-wrap {
-        width: 80px;
-        height: 80px;
+      .profile {
+        margin-top: 22px;
+        grid-template-columns: 70px 1fr;
+        column-gap: 9px;
       }
 
       .avatar {
-        width: 72px;
-        height: 72px;
+        width: 66px;
+        height: 66px;
       }
 
-      .username {
-        font-size: 25px;
-      }
-
-      .pro-pill {
-        height: 28px;
+      .handle {
         font-size: 18px;
       }
 
-      .meta-chip {
-        font-size: 16px;
+      .pro {
+        height: 19px;
+        padding: 0 8px;
+        font-size: 13px;
       }
 
+      .date,
       .category {
-        font-size: 15px;
-      }
-
-      .rank-strip {
-        margin-left: 96px;
-        font-size: 14px;
-      }
-
-      .section-title {
-        font-size: 21px;
-      }
-
-      .range-tabs {
-        gap: 6px;
-      }
-
-      .range-tabs button {
-        min-width: 52px;
-        height: 36px;
-        font-size: 19px;
-        padding: 0 10px;
-      }
-
-      .performance-card {
-        padding: 16px 17px 17px;
-      }
-
-      .gmv-value {
-        font-size: 37px;
-      }
-
-      .metric-number {
-        font-size: 22px;
-      }
-
-      .metric-name,
-      .peer-line {
         font-size: 12px;
       }
 
-      .tooltip {
-        font-size: 14px;
+      .rank {
+        height: 20px;
+        font-size: 11px;
+        gap: 5px;
+        padding-right: 8px;
       }
 
-      .status-row {
-        font-size: 21px;
+      .performance-head {
+        margin-top: 22px;
       }
 
-      .detail-title {
-        font-size: 23px;
+      .section-title {
+        font-size: 16px;
       }
 
-      .tab-switch button {
-        font-size: 17px;
+      .help-popover {
+        width: min(250px, calc(100vw - 24px));
+        font-size: 11px;
+      }
+
+      .card {
+        margin-top: 14px;
+        min-height: 210px;
+        padding: 13px 14px 11px;
+      }
+
+      .gmv-row {
+        grid-template-columns: 118px 1fr;
+      }
+
+      .gmv-value {
+        font-size: 32px;
+      }
+
+      .stat:nth-child(n + 3) {
+        padding-left: 9px;
+        grid-template-rows: 19px 24px 14px;
+        min-height: 64px;
+      }
+
+      .stat:nth-child(3) {
+        padding-left: 0;
+      }
+
+      .stat:nth-child(n + 3) .label,
+      .stat:nth-child(n + 3) .peer {
+        font-size: 8px;
+      }
+
+      .peer-help {
+        width: 9px;
+        height: 9px;
+        font-size: 6px;
+      }
+
+      .peer-popover {
+        width: min(280px, calc(100vw - 24px));
+        font-size: 11px;
+      }
+
+      .stat:nth-child(n + 3) .value {
+        font-size: 16px;
+      }
+
+      .stat:nth-child(5) .label {
+        font-size: 7.5px;
+      }
+
+      .tabs {
+        gap: 5px;
+      }
+
+      .tab {
+        min-width: 48px;
+      }
+
+      .branding-card {
+        padding-right: 18px;
+      }
+
+      .ready-badge {
+        min-width: 52px;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+      }
+
+      .kit-screen,
+      .edit-screen {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .kit-header {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .poster-card {
+        padding: 18px;
+      }
+
+      .creator {
+        gap: 13px;
+      }
+
+      .creator-avatar {
+        width: 58px;
+        height: 58px;
+      }
+
+      .creator-name {
+        font-size: 20px;
+      }
+
+      .poster-grid {
+        gap: 6px;
+      }
+
+      .gmv-summary {
+        display: grid;
+        grid-template-columns: auto 1fr;
+      }
+
+      .gmv-summary em {
+        grid-column: 1 / -1;
+        margin-left: 0;
+        text-align: left;
+      }
+
+      .setting-card {
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="screen profile-screen" id="profileScreen" aria-label="HitFinds profile">
-      <header class="topbar">
-        <div class="brand" aria-label="HitFinds">
-          <div class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          <div class="brand-text"><span class="hit">Hit</span><span class="accent">F</span><span class="find">inds</span></div>
-        </div>
-        <button class="icon-button" type="button" aria-label="Settings">
-          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2.2 2.2 0 0 1-3.11 3.11l-.05-.05a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65V21.5a2.2 2.2 0 0 1-4.4 0v-.08a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-1.98.36l-.05.05a2.2 2.2 0 0 1-3.11-3.11l.05-.05A1.8 1.8 0 0 0 3.6 15a1.8 1.8 0 0 0-1.65-1.1H1.8a2.2 2.2 0 0 1 0-4.4h.08A1.8 1.8 0 0 0 3.53 8a1.8 1.8 0 0 0-.36-1.98l-.05-.05a2.2 2.2 0 0 1 3.11-3.11l.05.05A1.8 1.8 0 0 0 8 3.6a1.8 1.8 0 0 0 1.1-1.65V1.8a2.2 2.2 0 0 1 4.4 0v.08A1.8 1.8 0 0 0 15 3.53a1.8 1.8 0 0 0 1.98-.36l.05-.05a2.2 2.2 0 0 1 3.11 3.11l-.05.05A1.8 1.8 0 0 0 19.4 8c.21.61.78 1.03 1.43 1.03h.37a2.2 2.2 0 0 1 0 4.4h-.08A1.8 1.8 0 0 0 19.4 15z"/></svg>
-        </button>
-      </header>
+  <main class="screen growth-screen" aria-label="HitFinds Growth page">
+    <section class="status" aria-label="status bar">
+      <div class="status-left">
+        <span>20:14</span>
+        <span class="mute" aria-hidden="true"></span>
+      </div>
+      <div class="status-icons" aria-hidden="true">
+        <span class="signal"><span></span><span></span><span></span><span></span><span></span></span>
+        <span class="wifi"></span>
+        <span class="battery">24</span>
+      </div>
+    </section>
 
-      <div class="profile-head">
-        <div class="avatar-wrap"><div class="avatar" aria-hidden="true"></div></div>
-        <div class="profile-copy">
-          <h1 class="username">@tiezh...</h1>
-          <div class="profile-row">
-            <span class="pro-pill">Pro</span>
-            <span class="meta-chip">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v4"/><path d="M17 2v4"/><path d="M3 9h18"/><path d="M5 5h14a2 2 0 0 1 2 2v14H3V7a2 2 0 0 1 2-2z"/><path d="M8 13h3"/><path d="M14 13h3"/><path d="M8 17h3"/><path d="M14 17h3"/></svg>
-              2027-09-22
-            </span>
+    <header class="topbar">
+      <div class="brand" aria-label="HitFinds">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span><span class="hit">Hit</span><span class="accent">F</span><span class="finds">inds</span></span>
+      </div>
+      <div class="gear" aria-hidden="true">⚙</div>
+    </header>
+
+    <section class="profile">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="identity">
+        <div class="name-row">
+          <div class="handle">@tiezh...</div>
+        </div>
+        <div class="membership-row" aria-label="membership level and expiration">
+          <div class="pro">Pro</div>
+          <div class="date">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.2" fill="none" stroke="currentColor"></rect>
+              <path d="M7.5 3.5v4M16.5 3.5v4M4 10h16M8 13.5h2M12 13.5h2M16 13.5h1M8 17h2M12 17h2M16 17h1" stroke="currentColor"></path>
+            </svg>
+            <span>2027-09-22</span>
+            <span class="chev" aria-hidden="true"></span>
           </div>
-          <div class="category">Beauty & Personal Care</div>
+        </div>
+        <div class="category">Home, Furniture &amp; Appliances</div>
+        <div class="rank">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 3.5h11a2 2 0 0 1 2 2v15l-7-3.5-7 3.5v-15a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor"></path>
+            <path d="m12 7.2 1.1 2.2 2.4.35-1.75 1.7.42 2.4L12 12.72 9.83 13.85l.42-2.4-1.75-1.7 2.4-.35L12 7.2Z" fill="none" stroke="currentColor"></path>
+          </svg>
+          <span>#14247 CATEGORY RANK</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="performance">
+      <div class="performance-head">
+        <div class="performance-title">
+          <div class="section-title">Performance</div>
+          <button class="help-button" type="button" aria-label="Show performance data note" aria-expanded="false" aria-controls="performance-help">?</button>
+          <div class="help-popover" id="performance-help" role="tooltip" hidden>Authorize your affiliate collaboration for accurate data.</div>
+        </div>
+        <div class="tabs" aria-label="period tabs">
+          <div class="tab active">7d</div>
+          <div class="tab">14d</div>
+          <div class="tab">28d</div>
         </div>
       </div>
 
-      <div class="rank-strip">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v18l-6-4-6 4z"/><path d="m9 10 2 2 4-5"/><path d="m9 15 2-2 4 5"/></svg>
-        <span>#182 CATEGORY RANK</span>
-      </div>
+      <article class="card">
+        <div class="card-arrow" aria-hidden="true"></div>
+        <div class="metric-title">GMV · 7D</div>
+        <div class="gmv-row">
+          <div class="gmv-value">$0</div>
+          <div class="progress" aria-hidden="true">
+            <svg class="gmv-chart" viewBox="0 0 180 42" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="gmvArea" x1="0" y1="6" x2="0" y2="42" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#c6ff00" stop-opacity="0.24"></stop>
+                  <stop offset="1" stop-color="#c6ff00" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <path class="trend-area" d="M0 31 C18 25 26 29 42 22 S70 11 88 17 S116 32 136 18 S158 9 180 12 L180 42 L0 42 Z"></path>
+              <path class="trend-line" d="M0 31 C18 25 26 29 42 22 S70 11 88 17 S116 32 136 18 S158 9 180 12"></path>
+              <circle class="trend-halo" cx="180" cy="12" r="15"></circle>
+              <circle class="trend-point" cx="180" cy="12" r="7"></circle>
+            </svg>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="label">VIEWS</div>
+            <div class="value">11.2m</div>
+            <div class="peer">
+              <span class="peer-text">peer 679.1m</span>
+              <button class="peer-help" type="button" aria-label="Explain views peer" data-peer-note="Average views of shoppable videos from creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">ENGAGEMENT</div>
+            <div class="value">0.6%</div>
+            <div class="peer">
+              <span class="peer-text">peer 1.2%</span>
+              <button class="peer-help" type="button" aria-label="Explain engagement peer" data-peer-note="Average engagement of shoppable videos from creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">FOLLOWERS</div>
+            <div class="value">351</div>
+            <div class="peer">
+              <span class="peer-text">peer 0</span>
+              <button class="peer-help" type="button" aria-label="Explain followers peer" data-peer-note="Average follower count of creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">VIDEOS</div>
+            <div class="value">19</div>
+            <div class="peer">
+              <span class="peer-text">peer 364</span>
+              <button class="peer-help" type="button" aria-label="Explain videos peer" data-peer-note="Average number of shoppable videos posted by creators in your same category.">?</button>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="label">COMM EARNINGS</div>
+            <div class="value">$395.1</div>
+            <div class="peer">
+              <span class="peer-text">peer $1567.9</span>
+              <button class="peer-help" type="button" aria-label="Explain commission earnings peer" data-peer-note="Average commission earned by creators in your same category.">?</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
 
-      <div class="section-line">
-        <div class="section-title">Performance <span class="help-dot">?</span></div>
-        <div class="range-tabs" aria-label="Performance range">
-          <button type="button" data-range="7">7d</button>
-          <button type="button" class="active" data-range="30">30d</button>
-          <button type="button" data-range="90">90d</button>
-        </div>
-      </div>
-
-      <button class="performance-card" type="button" id="openDetail" aria-label="Open performance details">
-        <div class="card-title-row">
-          <div class="metric-label">GMV · <span data-range-label>30D</span></div>
-          <div class="open-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></div>
-        </div>
-        <div class="hero-metric">
-          <div class="gmv-value" data-profile-gmv>$28.4K</div>
-          <div class="profile-spark" id="profileSpark"></div>
-        </div>
-        <div class="metric-grid">
-          <div class="metric-cell">
-            <div class="metric-name">Views</div>
-            <div class="metric-number" data-profile-views>2.7m</div>
-            <div class="peer-line">peer 1.9m <span class="tiny-help">?</span></div>
+    <section class="branding-kit" aria-label="branding kit">
+      <button class="branding-trigger" id="open-branding-kit" type="button" aria-label="Open Branding Kit">
+        <div class="branding-card">
+          <div class="branding-main">
+            <div class="branding-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M6.5 3.5h8.1L19 8.1v12.4H6.5z"></path>
+                <path d="M14.4 3.7v5h4.8"></path>
+                <path d="M9 12h6M9 15h6M9 18h4"></path>
+              </svg>
+            </div>
+            <div class="branding-copy">
+              <div class="branding-title">Branding Kit</div>
+              <div class="branding-meta">142 views · 7 shares · 3 days ago</div>
+            </div>
           </div>
-          <div class="metric-cell">
-            <div class="metric-name">Engagement</div>
-            <div class="metric-number" data-profile-er>5.8%</div>
-            <div class="peer-line">peer 4.2% <span class="tiny-help">?</span></div>
-          </div>
-          <div class="metric-cell">
-            <div class="metric-name">Followers</div>
-            <div class="metric-number" data-profile-followers>124.8K</div>
-            <div class="peer-line">peer 98.4K <span class="tiny-help">?</span></div>
-          </div>
-          <div class="metric-cell">
-            <div class="metric-name">Orders</div>
-            <div class="metric-number" data-profile-orders>1,284</div>
-            <div class="peer-line">peer 842 <span class="tiny-help">?</span></div>
-          </div>
-          <div class="metric-cell">
-            <div class="metric-name">Comm Earnings</div>
-            <div class="metric-number" data-profile-commission>$3.9K</div>
-            <div class="peer-line">peer $2.8K <span class="tiny-help">?</span></div>
+          <div class="branding-status-row">
+            <div class="ready-badge">READY</div>
+            <div class="branding-chevron" aria-hidden="true"></div>
           </div>
         </div>
       </button>
-
-      <div class="tooltip">Same-category creator median for shoppable videos, orders, and shop revenue in the selected range.</div>
-      <p class="profile-note">Profile commerce data refreshes daily across TikTok Shop sales and traffic.</p>
     </section>
 
-    <section class="screen detail-screen hidden" id="detailScreen" aria-label="Overview details">
-      <div class="status-row" aria-hidden="true">
-        <span>9:41</span>
-        <div class="system-icons"><div class="signal"><span></span><span></span><span></span><span></span></div><div class="wifi"></div><div class="battery"></div></div>
+    <nav class="bottom-nav" aria-label="bottom navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"></path>
+          <path d="M5.5 10.5V21h5v-6h3v6h5V10.5"></path>
+        </svg>
+        <span>Content</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20h16"></path>
+          <path d="M5 16h3v4H5zM10.5 12h3v8h-3zM16 8h3v12h-3z"></path>
+          <path d="m5 13 5-4 4 3 6-7"></path>
+          <path d="M16 5h4v4"></path>
+        </svg>
+        <span>Product</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"></path>
+          <path d="m19.4 15.2 1.1 2-2.2 3.8-2.3-.7a8.8 8.8 0 0 1-2 .95L13.5 23h-4l-.5-1.75a8.8 8.8 0 0 1-2-.95l-2.3.7-2.2-3.8 1.1-2a8.7 8.7 0 0 1 0-2.3l-1.1-2 2.2-3.8 2.3.7a8.8 8.8 0 0 1 2-.95L9.5 5h4l.5 1.85a8.8 8.8 0 0 1 2 .95l2.3-.7 2.2 3.8-1.1 2a8.7 8.7 0 0 1 0 2.3Z"></path>
+        </svg>
+        <span>Creator</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="7.5" r="4.5"></circle>
+          <path d="M4 22c.9-5 4-7.5 8-7.5s7.1 2.5 8 7.5"></path>
+        </svg>
+        <span>Growth</span>
+      </div>
+    </nav>
+  </main>
+
+  <main class="screen kit-screen" aria-label="Branding Kit page" hidden>
+    <header class="kit-header">
+      <button class="kit-icon-button" type="button" data-back-growth aria-label="Back to Growth">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 5-7 7 7 7"></path>
+        </svg>
+      </button>
+      <div class="kit-title">Branding Kit</div>
+      <button class="kit-action" type="button" data-open-edit>EDIT</button>
+    </header>
+
+    <div class="kit-content">
+      <div class="kit-badge-row">
+        <span class="kit-pill">POSTER</span>
+        <span class="kit-caption">Shareable single-image · auto-generated from your profile</span>
       </div>
 
-      <nav class="detail-nav" aria-label="Details navigation">
-        <button class="back-button" type="button" id="backToProfile" aria-label="Back to profile">
-          <svg viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"/><path d="M9 12h12"/></svg>
-        </button>
-        <h2 class="detail-title">Overview Details</h2>
-        <div></div>
-      </nav>
-
-      <div class="tab-switch" role="tablist" aria-label="Overview details tabs">
-        <button type="button" class="active" data-detail-tab="sales">Sales Data</button>
-        <button type="button" data-detail-tab="traffic">Sales Traffic</button>
-      </div>
-
-      <div id="salesPanel" data-panel="sales">
-        <section class="detail-card summary-card" aria-label="Sales data totals">
-          <h3 class="summary-title">Total GMV: $28.4K</h3>
-          <div class="summary-row">
-            <div>
-              <div class="small-label">Orders</div>
-              <div class="small-value">1,284</div>
-            </div>
-            <div>
-              <div class="small-label">Category Rank</div>
-              <div class="small-value">#182</div>
-            </div>
+      <section class="kit-section poster-card" aria-label="Creator kit poster">
+        <div class="poster-top">
+          <div class="kit-logo">
+            <span class="kit-logo-mark" aria-hidden="true"></span>
+            <span>HITFINDS · CREATOR KIT</span>
           </div>
-          <div class="summary-row">
-            <div>
-              <div class="small-label">Commission Earnings</div>
-              <div class="small-value">$3,916</div>
-            </div>
-            <div>
-              <div class="small-label">Conversion Rate</div>
-              <div class="small-value">3.2%</div>
-            </div>
-          </div>
-        </section>
-
-        <div class="pill-tabs" aria-label="Trend range">
-          <button type="button" data-range="7">Last 7 days</button>
-          <button type="button" class="active" data-range="30">Last 30 days</button>
-          <button type="button" data-range="90">Last 90 days</button>
+          <button class="mini-edit" type="button" data-open-edit>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+            edit
+          </button>
         </div>
 
-        <section class="detail-card chart-card" aria-label="Commerce trend">
-          <div class="chart-head">
+        <div class="creator">
+          <div class="creator-avatar" aria-hidden="true">M</div>
+          <div class="creator-info">
+            <div class="creator-name">Mia Chen</div>
+            <div class="creator-meta">@mia_beauty · Los Angeles, CA</div>
+            <div class="tiny-badge">BEAUTY · SKINCARE</div>
+          </div>
+        </div>
+
+        <p class="pitch">"<span data-kit-pitch>Beauty routines for real skin days, with product demos that feel honest and easy to follow.</span>"</p>
+
+        <div class="poster-grid" aria-label="Creator metrics">
+          <div class="poster-stat">
+            <strong>47.2k</strong>
+            <span>Followers</span>
+          </div>
+          <div class="poster-stat">
+            <strong>12.5k</strong>
+            <span>Avg Views</span>
+          </div>
+          <div class="poster-stat">
+            <strong>6.4%</strong>
+            <span>ER</span>
+          </div>
+          <div class="poster-stat">
+            <strong>1.8%</strong>
+            <span>CVR</span>
+          </div>
+        </div>
+
+        <div class="performance-mini">
+          <div class="poster-subtitle">Performance</div>
+          <div class="gmv-summary">
+            <strong>$42.6k</strong>
+            <span>Total GMV</span>
+            <em>Top: <b>$8.2k</b> · Mar 2026</em>
+          </div>
+          <div class="kit-progress" aria-hidden="true"><span></span></div>
+          <div class="performance-note">80% of GMV from <b>Skincare</b></div>
+        </div>
+
+        <div class="audience">
+          <div class="poster-subtitle">Audience</div>
+          <div class="audience-stack">
             <div>
-              <div class="chart-title">Ecommerce Data</div>
-              <div class="chart-subtitle" id="trendSummary">Last 30 Days GMV: $28.4K</div>
+              <div class="gender-labels">
+                <span class="gender-female">FEMALE</span>
+                <strong>88%</strong>
+                <span class="gender-male">MALE</span>
+              </div>
+              <div class="stacked-bar" aria-label="Audience gender split">
+                <span></span><span></span>
+              </div>
             </div>
-            <div class="select-pill">GMV <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
-          </div>
-          <div class="big-chart">
-            <svg id="mainTrend" viewBox="0 0 360 260" role="img" aria-label="GMV trend"></svg>
-          </div>
-          <div class="chart-dates" id="chartDates"><span>MAY 03</span><span>MAY 13</span><span>MAY 23</span><span>JUN 02</span></div>
-        </section>
 
-        <h3 class="detail-section-title">Sales Mix</h3>
-        <section class="detail-card comparison-card" aria-label="Video and live sales mix">
-          <div class="card-heading-row">
-            <div class="card-heading">Video vs Live</div>
-            <div class="legend"><span><i class="dot"></i>Video</span><span><i class="dot blue"></i>Live</span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Collaborative Shops</span><strong>45</strong><strong class="blue-text">12</strong></div>
-            <div class="stack-bar"><span style="--w:79%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Showcased Products</span><strong>39</strong><strong class="blue-text">12</strong></div>
-            <div class="stack-bar"><span style="--w:76%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Total Orders</span><strong>1,037</strong><strong class="blue-text">247</strong></div>
-            <div class="stack-bar"><span style="--w:81%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Total GMV</span><strong>$22.9K</strong><strong class="blue-text">$5.5K</strong></div>
-            <div class="stack-bar"><span style="--w:80%"></span></div>
-          </div>
-        </section>
+            <div class="audience-columns">
+              <div class="mini-bars" aria-label="Age distribution">
+                <div>
+                  <div class="bar-label"><span>18-24</span><b>25%</b></div>
+                  <div class="mini-bar"><span style="width: 60%"></span></div>
+                </div>
+                <div class="highlight">
+                  <div class="bar-label"><span>25-34</span><b>41%</b></div>
+                  <div class="mini-bar"><span style="width: 100%"></span></div>
+                </div>
+                <div>
+                  <div class="bar-label"><span>35-44</span><b>20%</b></div>
+                  <div class="mini-bar"><span style="width: 48%"></span></div>
+                </div>
+              </div>
 
-        <h3 class="detail-section-title">Sales Category Mix</h3>
-        <section class="detail-card donut-card" aria-label="Sales category mix">
-          <div class="donut">
-            <svg viewBox="0 0 160 160" aria-hidden="true">
-              <circle cx="80" cy="80" r="56" fill="none" stroke="#6696FF" stroke-width="22"/>
-              <circle cx="80" cy="80" r="56" fill="none" stroke="#CCFF00" stroke-width="22" stroke-dasharray="151 352" stroke-linecap="butt" transform="rotate(-90 80 80)"/>
-            </svg>
-            <div class="donut-center">Total<b>100%</b></div>
-          </div>
-          <div class="donut-legend">
-            <div><span><i class="dot"></i> Beauty & Personal Care</span><b>43%</b></div>
-            <div class="blue-copy"><span><i class="dot blue"></i> Others</span><b>57%</b></div>
-          </div>
-        </section>
-
-        <h3 class="detail-section-title">Peer Benchmark</h3>
-        <section class="detail-card benchmark-list" aria-label="Peer benchmark">
-          <div class="benchmark-row"><div class="benchmark-copy"><span>GMV Percentile</span><span>Top 18%</span></div><div class="progress"><span style="--w:82%"></span></div></div>
-          <div class="benchmark-row"><div class="benchmark-copy"><span>Orders Percentile</span><span>Top 24%</span></div><div class="progress"><span style="--w:76%"></span></div></div>
-          <div class="benchmark-row"><div class="benchmark-copy"><span>ER Percentile</span><span>Top 35%</span></div><div class="progress"><span style="--w:65%"></span></div></div>
-          <div class="benchmark-row"><div class="benchmark-copy"><span>CVR Percentile</span><span>Top 29%</span></div><div class="progress"><span style="--w:71%"></span></div></div>
-          <div class="benchmark-row"><div class="benchmark-copy"><span>Followers Growth Percentile</span><span>Top 21%</span></div><div class="progress"><span style="--w:79%"></span></div></div>
-        </section>
-
-        <h3 class="detail-section-title">Category Ranking</h3>
-        <section class="detail-card" aria-label="Category ranking">
-          <div class="ranking-grid">
-            <div class="rank-tile">
-              <div class="small-label">Beauty Category</div>
-              <div class="rank-number">#182</div>
-              <div class="rank-sub">of 8,742 creators</div>
-            </div>
-            <div class="rank-tile rank-up">
-              <div class="rank-up-mark">↑</div>
-              <div>
-                <div class="small-label">Compared to last month</div>
-                <div class="rank-number">36 positions</div>
+              <div class="mini-bars" aria-label="Country distribution">
+                <div>
+                  <div class="bar-label"><span>United States</span><b>62%</b></div>
+                  <div class="mini-bar"><span style="width: 100%"></span></div>
+                </div>
+                <div>
+                  <div class="bar-label"><span>Canada</span><b>14%</b></div>
+                  <div class="mini-bar"><span style="width: 22%"></span></div>
+                </div>
+                <div>
+                  <div class="bar-label"><span>United Kingdom</span><b>9%</b></div>
+                  <div class="mini-bar"><span style="width: 15%"></span></div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <h3 class="detail-section-title">Creator Milestones</h3>
-        <section class="detail-card" aria-label="Creator milestones">
-          <div class="timeline">
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First 100 Orders</div><div class="timeline-sub">Beauty product sales</div></div><div class="timeline-date">Jan 22</div></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First $1K Commission</div><div class="timeline-sub">Monthly commission reached</div></div><div class="timeline-date">Feb 14</div></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">First $10K GMV</div><div class="timeline-sub">Cumulative shop GMV</div></div><div class="timeline-date">Mar 03</div></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Highest GMV Day</div><div class="timeline-sub">$2,843 in daily GMV</div></div><div class="timeline-date">Mar 18</div></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Highest Orders Day</div><div class="timeline-sub">136 orders placed</div></div><div class="timeline-date">Apr 06</div></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><div><div class="timeline-title">Fastest Growth Week</div><div class="timeline-sub">+6.1K followers in 7 days</div></div><div class="timeline-date">May 17</div></div>
+        <div class="top-videos">
+          <div class="poster-subtitle">Top Videos</div>
+          <div class="video-grid">
+            <div class="video-tile">1.2M views</div>
+            <div class="video-tile">890k views</div>
+            <div class="video-tile">720k views</div>
           </div>
-        </section>
+        </div>
 
-        <h3 class="detail-section-title">Performance Highlights</h3>
-        <section class="highlight-strip" aria-label="Performance highlights">
-          <article class="highlight"><div class="highlight-label">Highest GMV Day</div><div class="highlight-value">$2,843</div><div class="highlight-date">March 18</div></article>
-          <article class="highlight"><div class="highlight-label">Highest Commission Day</div><div class="highlight-value">$391</div><div class="highlight-date">April 6</div></article>
-          <article class="highlight"><div class="highlight-label">Most Viewed Video</div><div class="highlight-value">428K</div><div class="highlight-date">Views</div></article>
-          <article class="highlight"><div class="highlight-label">Highest Orders Day</div><div class="highlight-value">136</div><div class="highlight-date">April 6</div></article>
-        </section>
-
-        <h3 class="detail-section-title">Monthly Summary</h3>
-        <section class="detail-card" aria-label="Monthly summary">
-          <div class="month-grid">
-            <div class="month-item"><div class="small-label">GMV</div><div class="small-value">$28,430</div><span class="change">↑ 18%</span></div>
-            <div class="month-item"><div class="small-label">Orders</div><div class="small-value">1,284</div><span class="change">↑ 12%</span></div>
-            <div class="month-item"><div class="small-label">Commission</div><div class="small-value">$3,916</div><span class="change">↑ 21%</span></div>
-            <div class="month-item"><div class="small-label">Followers Growth</div><div class="small-value">+8.4%</div><span class="change">↑ 2.1 pts</span></div>
+        <div class="worked-with">
+          <div class="poster-subtitle">Worked With</div>
+          <div class="brand-badges">
+            <span>medicube</span>
+            <span>CeraVe</span>
+            <span>Rhode</span>
+            <span>Glow Recipe</span>
+            <span>Dr.Melaxin</span>
           </div>
-        </section>
-      </div>
+        </div>
 
-      <div id="trafficPanel" class="hidden" data-panel="traffic">
-        <h3 class="detail-section-title">Video Analytics</h3>
-        <section class="detail-card" aria-label="Video analytics">
-          <div class="traffic-grid">
-            <div class="traffic-item"><div class="small-label">Shoppable Videos</div><div class="traffic-value">19</div></div>
-            <div class="traffic-item"><div class="small-label">Total Views</div><div class="traffic-value">2.7M</div></div>
-            <div class="traffic-item"><div class="small-label">Avg. Views</div><div class="traffic-value">142K</div></div>
-            <div class="traffic-item"><div class="small-label">Engagement Rate</div><div class="traffic-value">5.8%</div></div>
-          </div>
-        </section>
-
-        <h3 class="detail-section-title">Live Analytics</h3>
-        <section class="detail-card" aria-label="Live analytics">
-          <div class="traffic-grid">
-            <div class="traffic-item"><div class="small-label">Shoppable Live</div><div class="traffic-value">8</div></div>
-            <div class="traffic-item"><div class="small-label">Peak Viewers</div><div class="traffic-value">24.6K</div></div>
-            <div class="traffic-item"><div class="small-label">Avg. Viewers</div><div class="traffic-value">6.8K</div></div>
-            <div class="traffic-item"><div class="small-label">Highest Peak</div><div class="traffic-value">41K</div></div>
-          </div>
-        </section>
-
-        <h3 class="detail-section-title">Traffic Trend</h3>
-        <section class="detail-card chart-card" aria-label="Traffic trend">
-          <div class="chart-head">
-            <div>
-              <div class="chart-title">Video Views</div>
-              <div class="chart-subtitle">Last 30 Days Views: 2.7M</div>
+        <div class="rate-card">
+          <div class="poster-subtitle">Rate Card</div>
+          <div class="rate-grid">
+            <div class="rate-item">
+              <span>1 video</span>
+              <strong>$<span data-kit-rate="dedicatedVideo">1200</span></strong>
             </div>
-            <div class="select-pill">Views <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
+            <div class="rate-item">
+              <span>2-video bundle</span>
+              <strong class="muted-value">$<span data-kit-rate="videoBundle">2100</span></strong>
+            </div>
+            <div class="rate-item">
+              <span>+ Livestream</span>
+              <strong>+$<span data-kit-rate="livestreamAddOn">500</span></strong>
+            </div>
+            <div class="rate-item">
+              <span>Gifting</span>
+              <strong class="open-value" data-kit-gifting>✓ Open</strong>
+            </div>
+            <div class="rate-item wide">
+              <span>Category exclusivity</span>
+              <strong class="muted-value"><span data-kit-exclusivity>4</span> weeks</strong>
+            </div>
           </div>
-          <div class="big-chart">
-            <svg id="trafficTrend" viewBox="0 0 360 260" role="img" aria-label="Video views trend"></svg>
-          </div>
-          <div class="chart-dates"><span>MAY 03</span><span>MAY 13</span><span>MAY 23</span><span>JUN 02</span></div>
-        </section>
+        </div>
 
-        <h3 class="detail-section-title">Traffic Mix</h3>
-        <section class="detail-card comparison-card" aria-label="Traffic mix">
-          <div class="card-heading-row">
-            <div class="card-heading">Video vs Live</div>
-            <div class="legend"><span><i class="dot"></i>Video</span><span><i class="dot blue"></i>Live</span></div>
+        <div class="poster-footer">
+          <div class="contact-line">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v14H4z"></path>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+            <span data-kit-contact>mia@hitfinds.app</span>
           </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Total Views</span><strong>2.1M</strong><strong class="blue-text">640K</strong></div>
-            <div class="stack-bar"><span style="--w:77%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Orders</span><strong>1,037</strong><strong class="blue-text">247</strong></div>
-            <div class="stack-bar"><span style="--w:81%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Commission</span><strong>$3.1K</strong><strong class="blue-text">$816</strong></div>
-            <div class="stack-bar"><span style="--w:79%"></span></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-meta"><span>Followers Growth</span><strong>+7.2K</strong><strong class="blue-text">+1.9K</strong></div>
-            <div class="stack-bar"><span style="--w:79%"></span></div>
-          </div>
-        </section>
+          <div class="made-with">MADE WITH HITFINDS</div>
+        </div>
+      </section>
 
-        <h3 class="detail-section-title">Follower Growth</h3>
-        <section class="detail-card" aria-label="Follower growth">
-          <div class="two-column">
-            <div class="rank-tile"><div class="small-label">Followers</div><div class="rank-number">124.8K</div><div class="rank-sub">Current profile total</div></div>
-            <div class="rank-tile"><div class="small-label">Growth</div><div class="rank-number">+8.4%</div><div class="rank-sub">This month</div></div>
-          </div>
-          <div class="mini-chart"><svg id="growthTrend" viewBox="0 0 360 162" role="img" aria-label="Follower growth trend"></svg></div>
-        </section>
+      <section class="kit-section tip-card" aria-label="Branding kit tip">
+        <div class="tip-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 18h6"></path>
+            <path d="M10 22h4"></path>
+            <path d="M8.5 14.5a6 6 0 1 1 7 0c-.9.7-1.5 1.7-1.5 2.7h-4c0-1-.6-2-1.5-2.7Z"></path>
+          </svg>
+        </div>
+        <div class="tip-body">
+          <h2>What brands look at first</h2>
+          <ol>
+            <li><b>1.</b>Audience match <span>(gender + age + geo)</span></li>
+            <li><b>2.</b>Past GMV in their category</li>
+            <li><b>3.</b>Best-performing videos as proof</li>
+          </ol>
+          <p>Your kit highlights all three above the rate card.</p>
+        </div>
+      </section>
+
+      <button class="share-button" type="button">Share with brand</button>
+      <div class="home-indicator" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <main class="screen edit-screen" aria-label="Edit Branding Kit page" hidden>
+    <header class="kit-header">
+      <button class="kit-icon-button" type="button" data-cancel-edit aria-label="Back to Branding Kit">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 5-7 7 7 7"></path>
+        </svg>
+      </button>
+      <div class="kit-title">Edit Kit</div>
+      <button class="kit-action save" id="save-kit" type="button">SAVE</button>
+    </header>
+
+    <form class="edit-content" id="branding-kit-form">
+      <div class="form-group">
+        <label class="form-label" for="pitch-line">Pitch Line</label>
+        <textarea class="form-control" id="pitch-line" name="pitchLine" placeholder="Enter your pitch line...">Beauty routines for real skin days, with product demos that feel honest and easy to follow.</textarea>
       </div>
-    </section>
+
+      <div class="form-group">
+        <label class="form-label" for="contact-email">Contact Email</label>
+        <input class="form-control" id="contact-email" name="contact" type="email" value="mia@hitfinds.app" placeholder="mia@example.com">
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Rate Card ($)</div>
+        <div class="rate-list">
+          <div class="rate-row">
+            <label for="rate-dedicated">1 dedicated video</label>
+            <div class="money-field">
+              <span>$</span>
+              <input id="rate-dedicated" name="dedicatedVideo" type="number" value="1200">
+            </div>
+          </div>
+          <div class="rate-row">
+            <label for="rate-bundle">2-video bundle</label>
+            <div class="money-field">
+              <span>$</span>
+              <input class="bundle-input" id="rate-bundle" name="videoBundle" type="number" value="2100">
+            </div>
+          </div>
+          <div class="rate-row">
+            <label for="rate-livestream">Livestream add-on</label>
+            <div class="money-field">
+              <span>$</span>
+              <input id="rate-livestream" name="livestreamAddOn" type="number" value="500">
+            </div>
+          </div>
+          <div class="rate-row">
+            <label for="rate-ugc">UGC only</label>
+            <div class="money-field">
+              <span>$</span>
+              <input id="rate-ugc" name="ugcOnly" type="number" value="800">
+            </div>
+          </div>
+          <div class="rate-row">
+            <label for="rate-rush">Rush fee</label>
+            <div class="money-field">
+              <span>$</span>
+              <input id="rate-rush" name="rushFee" type="number" value="350">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-stack">
+        <div class="setting-card">
+          <div>
+            <div class="setting-title">Accepting gifting</div>
+            <div class="setting-note">Brand sends product, no fee, with social post</div>
+          </div>
+          <button class="switch is-on" id="gifting-switch" type="button" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="setting-card">
+          <div>
+            <div class="setting-title">Category exclusivity</div>
+            <div class="setting-note">No competing brand for X weeks after post</div>
+          </div>
+          <div class="counter">
+            <button type="button" data-exclusivity-step="-1" aria-label="Decrease exclusivity">-</button>
+            <span id="exclusivity-value">4</span>
+            <button type="button" data-exclusivity-step="1" aria-label="Increase exclusivity">+</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </main>
 
   <script>
-    const ranges = {
-      7: {
-        label: "7D",
-        gmv: "$7.4K",
-        views: "698K",
-        er: "5.4%",
-        followers: "124.8K",
-        orders: "326",
-        commission: "$1.0K",
-        trendText: "Last 7 Days GMV: $7.4K",
-        dates: ["MAY 27", "MAY 29", "MAY 31", "JUN 02"],
-        main: [36, 48, 42, 59, 68, 61, 78],
-        profile: [24, 29, 35, 42, 39, 52, 58],
-        traffic: [38, 52, 49, 63, 72, 69, 82],
-        growth: [18, 22, 26, 32, 39, 43, 50]
-      },
-      30: {
-        label: "30D",
-        gmv: "$28.4K",
-        views: "2.7m",
-        er: "5.8%",
-        followers: "124.8K",
-        orders: "1,284",
-        commission: "$3.9K",
-        trendText: "Last 30 Days GMV: $28.4K",
-        dates: ["MAY 03", "MAY 13", "MAY 23", "JUN 02"],
-        main: [22, 25, 29, 34, 42, 50, 48, 41, 35, 46, 68, 88, 92, 80, 62, 42, 35, 44, 70, 86],
-        profile: [31, 37, 39, 46, 55, 61, 58, 49, 42, 48, 63, 72, 76, 69, 58, 51, 62, 80, 83, 78],
-        traffic: [35, 43, 46, 50, 58, 67, 61, 56, 49, 58, 76, 93, 88, 76, 66, 52, 49, 66, 78, 91],
-        growth: [14, 17, 20, 24, 27, 31, 34, 36, 39, 42, 45, 48, 51, 53, 57, 60, 63, 67, 70, 74]
-      },
-      90: {
-        label: "90D",
-        gmv: "$79.6K",
-        views: "7.9m",
-        er: "5.6%",
-        followers: "124.8K",
-        orders: "3,684",
-        commission: "$10.9K",
-        trendText: "Last 90 Days GMV: $79.6K",
-        dates: ["MAR 04", "APR 03", "MAY 03", "JUN 02"],
-        main: [18, 24, 30, 27, 38, 46, 55, 49, 44, 58, 69, 76, 72, 83, 91, 86, 98, 104],
-        profile: [20, 28, 33, 31, 42, 47, 57, 53, 50, 63, 72, 79, 77, 88, 96, 92, 103, 110],
-        traffic: [28, 36, 41, 38, 50, 58, 62, 59, 57, 68, 78, 86, 83, 90, 101, 97, 112, 118],
-        growth: [8, 11, 15, 19, 23, 28, 32, 35, 39, 44, 49, 54, 58, 63, 68, 72, 77, 82]
+    const helpButton = document.querySelector(".help-button");
+    const helpPopover = document.querySelector("#performance-help");
+    const peerButtons = document.querySelectorAll(".peer-help");
+    const peerPopover = document.createElement("div");
+    let activePeerButton = null;
+    peerPopover.className = "peer-popover";
+    peerPopover.hidden = true;
+    document.body.appendChild(peerPopover);
+
+    function setHelpOpen(isOpen) {
+      helpPopover.hidden = !isOpen;
+      helpButton.classList.toggle("is-open", isOpen);
+      helpButton.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        setPeerOpen(null);
       }
+    }
+
+    function setPeerOpen(button) {
+      peerButtons.forEach((item) => item.classList.toggle("is-open", item === button));
+      if (!button) {
+        activePeerButton = null;
+        peerPopover.hidden = true;
+        peerPopover.textContent = "";
+        return;
+      }
+
+      activePeerButton = button;
+      peerPopover.textContent = button.dataset.peerNote;
+      peerPopover.hidden = false;
+      positionPeerPopover(button);
+      setHelpOpen(false);
+    }
+
+    function positionPeerPopover(button) {
+      const gap = 9;
+      const pagePadding = 14;
+      const buttonRect = button.getBoundingClientRect();
+      const popoverRect = peerPopover.getBoundingClientRect();
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+      const maxLeft = window.innerWidth - popoverRect.width - pagePadding;
+      const left = Math.min(Math.max(buttonCenter - popoverRect.width / 2, pagePadding), maxLeft);
+      const top = buttonRect.bottom + gap;
+      const arrowLeft = Math.min(Math.max(buttonCenter - left - 4, 12), popoverRect.width - 20);
+
+      peerPopover.style.left = `${left}px`;
+      peerPopover.style.top = `${top}px`;
+      peerPopover.style.setProperty("--arrow-left", `${arrowLeft}px`);
+    }
+
+    helpButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setHelpOpen(helpPopover.hidden);
+    });
+
+    helpPopover.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    peerButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setPeerOpen(button.classList.contains("is-open") ? null : button);
+      });
+    });
+
+    peerPopover.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+      setHelpOpen(false);
+      setPeerOpen(null);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setHelpOpen(false);
+        setPeerOpen(null);
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (activePeerButton) {
+        positionPeerPopover(activePeerButton);
+      }
+    });
+
+    const pages = {
+      growth: document.querySelector(".growth-screen"),
+      branding: document.querySelector(".kit-screen"),
+      edit: document.querySelector(".edit-screen")
+    };
+    const openBrandingButton = document.querySelector("#open-branding-kit");
+    const kitForm = document.querySelector("#branding-kit-form");
+    const giftingSwitch = document.querySelector("#gifting-switch");
+    const exclusivityValue = document.querySelector("#exclusivity-value");
+    const shareButton = document.querySelector(".share-button");
+    let shareResetTimer = null;
+    let draftAcceptingGifting = true;
+    let draftCategoryExclusivity = 4;
+    let kitData = {
+      pitchLine: "Beauty routines for real skin days, with product demos that feel honest and easy to follow.",
+      contact: "mia@hitfinds.app",
+      rateCard: {
+        dedicatedVideo: 1200,
+        videoBundle: 2100,
+        livestreamAddOn: 500,
+        ugcOnly: 800,
+        rushFee: 350
+      },
+      acceptingGifting: true,
+      categoryExclusivity: 4
     };
 
-    let activeRange = "30";
-
-    const profileScreen = document.getElementById("profileScreen");
-    const detailScreen = document.getElementById("detailScreen");
-    const salesPanel = document.getElementById("salesPanel");
-    const trafficPanel = document.getElementById("trafficPanel");
-
-    function toPoints(values, width, height, padX, padY) {
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const span = Math.max(1, max - min);
-      return values.map((value, index) => {
-        const x = padX + (index / Math.max(1, values.length - 1)) * (width - padX * 2);
-        const y = padY + (1 - ((value - min) / span)) * (height - padY * 2);
-        return [x, y];
+    function showPage(pageName) {
+      Object.entries(pages).forEach(([name, page]) => {
+        page.hidden = name !== pageName;
       });
+      setHelpOpen(false);
+      setPeerOpen(null);
+      window.scrollTo(0, 0);
     }
 
-    function linePath(points) {
-      if (!points.length) return "";
-      return points.map((point, index) => `${index ? "L" : "M"}${point[0].toFixed(2)} ${point[1].toFixed(2)}`).join(" ");
-    }
-
-    function areaPath(points, height, padY) {
-      const first = points[0];
-      const last = points[points.length - 1];
-      return `${linePath(points)} L${last[0].toFixed(2)} ${height - padY} L${first[0].toFixed(2)} ${height - padY} Z`;
-    }
-
-    function renderProfileSpark(values) {
-      const el = document.getElementById("profileSpark");
-      const pts = toPoints(values, 190, 90, 4, 12);
-      const last = pts[pts.length - 1];
-      el.innerHTML = `
-        <svg viewBox="0 0 190 90" aria-hidden="true">
-          <defs>
-            <filter id="profileGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="5" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <linearGradient id="profileArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#CCFF00" stop-opacity="0.26"/>
-              <stop offset="1" stop-color="#CCFF00" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="${areaPath(pts, 90, 12)}" fill="url(#profileArea)"></path>
-          <path d="${linePath(pts)}" fill="none" stroke="#CCFF00" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#profileGlow)"></path>
-          <circle cx="${last[0].toFixed(2)}" cy="${last[1].toFixed(2)}" r="14" fill="#CCFF00"></circle>
-          <circle cx="${last[0].toFixed(2)}" cy="${last[1].toFixed(2)}" r="28" fill="rgba(204,255,0,0.28)"></circle>
-        </svg>
-      `;
-    }
-
-    function renderAreaChart(id, values, color = "#CCFF00", withSecond = true) {
-      const svg = document.getElementById(id);
-      if (!svg) return;
-      const width = 360;
-      const height = id === "growthTrend" ? 162 : 260;
-      const padX = id === "growthTrend" ? 12 : 18;
-      const padY = id === "growthTrend" ? 14 : 24;
-      const pts = toPoints(values, width, height, padX, padY);
-      const secondValues = values.map((value, index) => value * (0.55 + (index % 5) * 0.035));
-      const pts2 = toPoints(secondValues, width, height, padX, padY);
-      const grid = [0, 1, 2].map(i => {
-        const y = padY + i * ((height - padY * 2) / 2);
-        return `<line x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
-      }).join("");
-      const markers = [Math.floor(pts.length * 0.58), pts.length - 1].map(i => {
-        const point = pts[i];
-        return `<circle cx="${point[0].toFixed(2)}" cy="${point[1].toFixed(2)}" r="5" fill="${color}"></circle>`;
-      }).join("");
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="${id}Area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="${color}" stop-opacity="0.24"/>
-            <stop offset="1" stop-color="${color}" stop-opacity="0"/>
-          </linearGradient>
-          <filter id="${id}Glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        ${grid}
-        ${withSecond ? `<path d="${linePath(pts2)}" fill="none" stroke="#6696FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"></path>` : ""}
-        <path d="${areaPath(pts, height, padY)}" fill="url(#${id}Area)"></path>
-        <path d="${linePath(pts)}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id}Glow)"></path>
-        ${markers}
-      `;
-    }
-
-    function setRange(range) {
-      activeRange = String(range);
-      const data = ranges[activeRange];
-      document.querySelectorAll("[data-range]").forEach(button => {
-        button.classList.toggle("active", button.dataset.range === activeRange);
-      });
-      document.querySelector("[data-range-label]").textContent = data.label;
-      document.querySelector("[data-profile-gmv]").textContent = data.gmv;
-      document.querySelector("[data-profile-views]").textContent = data.views;
-      document.querySelector("[data-profile-er]").textContent = data.er;
-      document.querySelector("[data-profile-followers]").textContent = data.followers;
-      document.querySelector("[data-profile-orders]").textContent = data.orders;
-      document.querySelector("[data-profile-commission]").textContent = data.commission;
-      document.getElementById("trendSummary").textContent = data.trendText;
-      document.getElementById("chartDates").innerHTML = data.dates.map(date => `<span>${date}</span>`).join("");
-      renderProfileSpark(data.profile);
-      renderAreaChart("mainTrend", data.main);
-      renderAreaChart("trafficTrend", data.traffic, "#CCFF00", true);
-      renderAreaChart("growthTrend", data.growth, "#CCFF00", false);
-    }
-
-    function setDetailTab(tabName) {
-      document.querySelectorAll("[data-detail-tab]").forEach(button => {
-        button.classList.toggle("active", button.dataset.detailTab === tabName);
-      });
-      salesPanel.classList.toggle("hidden", tabName !== "sales");
-      trafficPanel.classList.toggle("hidden", tabName !== "traffic");
-      if (tabName === "traffic") {
-        renderAreaChart("trafficTrend", ranges[activeRange].traffic, "#CCFF00", true);
-        renderAreaChart("growthTrend", ranges[activeRange].growth, "#CCFF00", false);
+    function setText(selector, value) {
+      const node = document.querySelector(selector);
+      if (node) {
+        node.textContent = value;
       }
     }
 
-    document.querySelectorAll("[data-range]").forEach(button => {
-      button.addEventListener("click", event => {
-        event.stopPropagation();
-        setRange(button.dataset.range);
+    function renderKitData() {
+      setText("[data-kit-pitch]", kitData.pitchLine);
+      setText("[data-kit-contact]", kitData.contact);
+      Object.entries(kitData.rateCard).forEach(([key, value]) => {
+        setText(`[data-kit-rate="${key}"]`, String(value));
+      });
+      setText("[data-kit-exclusivity]", String(kitData.categoryExclusivity));
+
+      const giftingLabel = document.querySelector("[data-kit-gifting]");
+      if (giftingLabel) {
+        giftingLabel.textContent = kitData.acceptingGifting ? "✓ Open" : "✕ Closed";
+        giftingLabel.classList.toggle("open-value", kitData.acceptingGifting);
+        giftingLabel.classList.toggle("closed-value", !kitData.acceptingGifting);
+      }
+    }
+
+    function renderEditState() {
+      giftingSwitch.classList.toggle("is-on", draftAcceptingGifting);
+      giftingSwitch.setAttribute("aria-checked", String(draftAcceptingGifting));
+      exclusivityValue.textContent = String(draftCategoryExclusivity);
+    }
+
+    function syncFormFromData() {
+      kitForm.elements.pitchLine.value = kitData.pitchLine;
+      kitForm.elements.contact.value = kitData.contact;
+      kitForm.elements.dedicatedVideo.value = kitData.rateCard.dedicatedVideo;
+      kitForm.elements.videoBundle.value = kitData.rateCard.videoBundle;
+      kitForm.elements.livestreamAddOn.value = kitData.rateCard.livestreamAddOn;
+      kitForm.elements.ugcOnly.value = kitData.rateCard.ugcOnly;
+      kitForm.elements.rushFee.value = kitData.rateCard.rushFee;
+      draftAcceptingGifting = kitData.acceptingGifting;
+      draftCategoryExclusivity = kitData.categoryExclusivity;
+      renderEditState();
+    }
+
+    function readMoneyField(name) {
+      const value = Number.parseInt(kitForm.elements[name].value, 10);
+      return Number.isFinite(value) ? Math.max(0, value) : 0;
+    }
+
+    openBrandingButton.addEventListener("click", () => {
+      showPage("branding");
+    });
+
+    document.querySelectorAll("[data-back-growth]").forEach((button) => {
+      button.addEventListener("click", () => {
+        showPage("growth");
       });
     });
 
-    document.querySelectorAll("[data-detail-tab]").forEach(button => {
-      button.addEventListener("click", () => setDetailTab(button.dataset.detailTab));
+    document.querySelectorAll("[data-open-edit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        syncFormFromData();
+        showPage("edit");
+      });
     });
 
-    document.getElementById("openDetail").addEventListener("click", () => {
-      profileScreen.classList.add("hidden");
-      detailScreen.classList.remove("hidden");
-      setDetailTab("sales");
-      window.scrollTo(0, 0);
-      setRange(activeRange);
+    document.querySelector("[data-cancel-edit]").addEventListener("click", () => {
+      showPage("branding");
     });
 
-    document.getElementById("backToProfile").addEventListener("click", () => {
-      detailScreen.classList.add("hidden");
-      profileScreen.classList.remove("hidden");
-      window.scrollTo(0, 0);
+    giftingSwitch.addEventListener("click", () => {
+      draftAcceptingGifting = !draftAcceptingGifting;
+      renderEditState();
     });
 
-    setRange(activeRange);
+    document.querySelectorAll("[data-exclusivity-step]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const step = Number.parseInt(button.dataset.exclusivityStep, 10);
+        draftCategoryExclusivity = Math.max(0, draftCategoryExclusivity + step);
+        renderEditState();
+      });
+    });
+
+    kitForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+    });
+
+    document.querySelector("#save-kit").addEventListener("click", () => {
+      kitData = {
+        pitchLine: kitForm.elements.pitchLine.value.trim() || kitData.pitchLine,
+        contact: kitForm.elements.contact.value.trim() || kitData.contact,
+        rateCard: {
+          dedicatedVideo: readMoneyField("dedicatedVideo"),
+          videoBundle: readMoneyField("videoBundle"),
+          livestreamAddOn: readMoneyField("livestreamAddOn"),
+          ugcOnly: readMoneyField("ugcOnly"),
+          rushFee: readMoneyField("rushFee")
+        },
+        acceptingGifting: draftAcceptingGifting,
+        categoryExclusivity: draftCategoryExclusivity
+      };
+      renderKitData();
+      showPage("branding");
+    });
+
+    shareButton.addEventListener("click", () => {
+      window.clearTimeout(shareResetTimer);
+      shareButton.textContent = "Link ready";
+      shareResetTimer = window.setTimeout(() => {
+        shareButton.textContent = "Share with brand";
+      }, 1200);
+    });
+
+    renderKitData();
   </script>
 </body>
 </html>
